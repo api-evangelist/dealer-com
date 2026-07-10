@@ -1,0 +1,82 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Dealer.com
+providerId: dealer-com
+created: '2026-07-10'
+modified: '2026-07-10'
+reconciled: false
+tags:
+- Automotive
+- Dealership
+- Digital Marketing
+- Partner Program
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Dealer.com spend. Dealer.com does not bill API access as a
+  usage-metered developer product; there is no public per-call rate card. Cost
+  is incurred through commercial agreements - the Dealer.com Integrated Partner
+  Program and the Cox Automotive Integration Platform - and through Dealer.com's
+  dealer-facing products (websites, digital advertising, digital marketing),
+  which are sold on enterprise contracts. For a partner, the dominant cost is
+  the negotiated partner/subscription agreement plus the partner's own
+  engineering to build and maintain the integration, rather than variable
+  per-request API charges.
+notes: >-
+  Per-unit API rates are not published and cannot be reconciled here. Treat
+  Dealer.com/Cox Automotive spend as contracted subscription and partnership
+  fees. Confirm actual commercial terms directly with Cox Automotive.
+sources:
+- https://www.dealer.com/products/integrated-partner-program
+- https://developer.coxautoinc.com/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Dealer.com (Cox Automotive)
+serviceCategory: Automotive Digital Marketing and Websites
+billingModel:
+  pricingCategory: Contract
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+meters:
+- name: partner_agreement
+  description: Contracted Integrated Partner Program or Cox Automotive Integration Platform agreement fee. Negotiated, not publicly rated.
+  unit: contract
+  aggregation: sum
+  dimensions:
+  - partner
+  - program
+- name: dealer_subscription
+  description: Dealer-facing Dealer.com product subscriptions (website, advertising, marketing), sold on enterprise contract.
+  unit: subscription
+  aggregation: sum
+  dimensions:
+  - dealer
+  - product
+- name: integration_engineering
+  description: Partner's own build-and-maintain cost for the integration (no Dealer.com invoice).
+  unit: hours
+  aggregation: sum
+  dimensions:
+  - partner
+principles:
+- name: Visibility
+  description: Track contracted partner and dealer subscription fees; there is no per-call meter to monitor since API access is not usage-billed.
+- name: Allocation
+  description: Attribute partner-program and platform fees to the products and dealer accounts that use the integration.
+- name: Optimization
+  description: Consolidate integrations under a single partner agreement where possible; scope inventory and lead feeds to needed data to reduce engineering and maintenance overhead.
+- name: Accountability
+  description: Assign an owner for the Cox Automotive/Dealer.com relationship who reviews contract terms and renewal against realized integration value.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

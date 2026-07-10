@@ -1,0 +1,61 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Dealer.com
+providerId: dealer-com
+created: '2026-07-10'
+modified: '2026-07-10'
+reconciled: false
+tags:
+- Automotive
+- Dealership
+- Partner Program
+- Rate Limiting
+- Quotas
+description: >-
+  Dealer.com does not publish numeric rate limits for its partner APIs. Because
+  the Website Integration API and the Cox Automotive Integration Platform are
+  partner-gated and governed by individual agreements, any throughput limits,
+  quotas, or throttling behavior are defined per partner contract and OAuth
+  client rather than by a public rate card. Dealer.com states that it monitors
+  what third parties do on the platform to protect dealer data and site
+  performance, implying per-partner governance, but no specific numbers are
+  documented.
+notes: >-
+  No public per-minute or per-day request limits are documented as of the review
+  date. Partners should confirm quotas, concurrency, and throttling behavior in
+  their Integrated Partner Program or Cox Automotive Integration Platform
+  agreement. Standard HTTP 429 handling with exponential backoff and Retry-After
+  is prudent against any OAuth-protected Cox platform endpoint.
+sources:
+- https://www.dealer.com/products/integrated-partner-program
+- https://www.dealer.com/resources/new-website-integration-api-delivers-cutting-edge-third-party-experience-on-dealer-com-platform/
+- https://developer.coxautoinc.com/
+responseCodes:
+  throttled: 429
+limits:
+- name: Website Integration API
+  scope: partner
+  metric: requests
+  limit: not published
+  notes: Governed by partner agreement and platform performance monitoring; no public numeric limit.
+- name: Cox Platform API Requests
+  scope: oauth-client
+  metric: requests
+  limit: not published
+  notes: OAuth-gated Cox Automotive Integration Platform; per-client limits defined by partner terms.
+- name: Inventory and Imagery Feeds
+  scope: partner
+  metric: records
+  limit: not published
+  notes: Feed refresh cadence and volume set by integration configuration, not a public cap.
+policies:
+- name: Platform Monitoring
+  description: Dealer.com monitors third-party activity on client websites to protect dealer data and site performance.
+- name: Per-Partner Governance
+  description: Limits and quotas are established per partner agreement rather than by a public rate card.
+- name: Backoff Strategy
+  description: Clients of OAuth-protected Cox platform endpoints should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

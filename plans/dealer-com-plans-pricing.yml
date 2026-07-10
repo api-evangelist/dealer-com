@@ -1,0 +1,84 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Dealer.com
+providerId: dealer-com
+created: '2026-07-10'
+modified: '2026-07-10'
+reconciled: false
+tags:
+- Automotive
+- Dealership
+- Digital Marketing
+- Partner Program
+- Plans
+description: >-
+  Dealer.com does not sell API access as a self-serve, metered product. Access
+  to the Website Integration API and the other partner capabilities is arranged
+  through the Dealer.com Integrated Partner Program and, at the platform level,
+  the Cox Automotive Integration Platform. Terms are commercial and negotiated:
+  partners are vetted and certified, sign a partner agreement, and receive OAuth
+  credentials. Dealer.com's own products (websites, digital advertising, digital
+  marketing) are sold to dealers on enterprise contracts. No public per-call or
+  per-tier API pricing is published.
+notes: >-
+  All entries below reflect an enterprise / contact-sales model. There is no
+  published free tier, usage-metered tier, or public rate card for Dealer.com
+  API access. Verify current partner terms with Cox Automotive during any
+  reconciliation.
+sources:
+- https://www.dealer.com/products/integrated-partner-program
+- https://www.dealer.com/integrations/
+- https://developer.coxautoinc.com/
+plans:
+- id: dealer-com-integrated-partner
+  name: Integrated Partner Program
+  type: enterprise
+  description: >-
+    Certified partner access to place integrations on Dealer.com websites
+    (inventory and imagery, website and content, leads, digital retailing,
+    digital advertising) via the Website Integration API. Partners apply through
+    an intake form, are vetted and certified, and operate under a commercial
+    agreement. Onboarding contact for the Website Integration API is
+    Website.Integration.API@coxautoinc.com.
+  entries:
+  - label: Partner Agreement
+    name: partner_agreement
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: north-america
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Website Integration API Access
+  - name: Partner Certification
+  - name: Dealer Directory Placement
+- id: dealer-com-cox-integration-platform
+  name: Cox Automotive Integration Platform
+  type: enterprise
+  description: >-
+    Platform-level REST API access (leads, inventory, deal, digital retail)
+    through developer.coxautoinc.com, secured with OAuth (Okta) and gated by an
+    approved Cox Automotive partner agreement. Pricing is negotiated per
+    integration and volume.
+  entries:
+  - label: Platform Partner Agreement
+    name: platform_agreement
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: north-america
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: OAuth Credentials
+  - name: Lead Management API
+  - name: Inventory and Deal Data
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

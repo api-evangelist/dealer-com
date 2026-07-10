@@ -1,0 +1,107 @@
+aid: dealer-com
+name: Dealer.com
+review:
+  question: Does Dealer.com expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-10'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Dealer.com publishes no documented public
+    API of any transport - REST, SSE, or WebSocket. Its integration surface is
+    partner-gated behind the Dealer.com Integrated Partner Program and the wider
+    Cox Automotive Integration Platform (OAuth/Okta), and the platform-level
+    APIs that are documented there (leads, inventory, deal, digital retail) are
+    request/response REST over HTTPS. There is no server-push WebSocket or SSE
+    endpoint on Dealer.com's own surface to model.
+findings:
+  summary: |
+    Dealer.com does not publish a documented public WebSocket API - and, more
+    broadly, does not publish an open, self-serve public API at all. Dealer.com
+    is a Cox Automotive brand providing dealership websites, digital advertising,
+    and digital marketing. Third-party access is partner-gated:
+
+      - The Dealer.com Website Integration API lets approved partners place and
+        control experiences on dealer websites; it is arranged through the
+        Integrated Partner Program (onboarding via
+        Website.Integration.API@coxautoinc.com). No endpoints, base URL, or auth
+        scheme are published.
+      - The Integrated Partner Program spans inventory and imagery, website and
+        content, lead generation and management, digital retailing, and digital
+        advertising, joined via an intake form and partner certification - not
+        open API documentation.
+      - Platform-level data (leads, inventory, deal, digital retail) is reachable
+        through the Cox Automotive Integration Platform at
+        developer.coxautoinc.com, which uses OAuth (Okta) and requires an
+        approved partner agreement. Those documented operations are REST over
+        HTTPS.
+
+    No realtime, bidirectional, or streaming WebSocket (ws:// or wss://) endpoint
+    is documented on any Dealer.com or Cox Automotive Integration Platform
+    surface as of the review date.
+  accessModel: |
+    Partner-gated / contact-sales. There is no public developer signup for a
+    Dealer.com API. Partners apply through the Integrated Partner Program or the
+    Cox Automotive Integration Platform, are vetted and certified, and receive
+    OAuth credentials under a commercial agreement. Pricing is enterprise /
+    negotiated and is not published.
+  transports:
+    - protocol: REST
+      scheme: https
+      documented: partial
+      note: >-
+        The Cox Automotive Integration Platform documents REST APIs (leads,
+        inventory, deal, digital retail) behind OAuth/Okta for approved partners.
+        Dealer.com's own Website Integration API is announced but not publicly
+        specified.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: >-
+        No WebSocket endpoint is documented on Dealer.com or the Cox Automotive
+        Integration Platform as of the review date.
+    - protocol: SSE
+      scheme: https
+      documented: false
+      note: No Server-Sent Events streaming surface is documented.
+  endpointsConfirmedRest: []
+  endpointsModeledNote: |
+    The API entries in apis.yml (Website Integration, Inventory and Imagery,
+    Leads, Website Personalization, Digital Advertising) are logical models of
+    partner capabilities. They carry endpointsModeled: true and deliberately do
+    NOT assert base URLs or concrete endpoints, because Dealer.com does not
+    publish an open specification. Observed Cox platform infrastructure hosts
+    (e.g. control.api.coxautoinc.com, developer-sfservices-api.prod.coxautoapi.com)
+    appear only in the developer-portal shell and are not documented public
+    Dealer.com endpoints.
+sources:
+  - url: https://www.dealer.com/products/integrated-partner-program
+    type: Documentation
+    note: Integrated Partner Program - inventory/imagery, website/content, leads, digital retailing, digital advertising; intake form, no public API docs.
+  - url: https://www.dealer.com/resources/new-website-integration-api-delivers-cutting-edge-third-party-experience-on-dealer-com-platform/
+    type: Documentation
+    note: Website Integration API announcement; partner-gated, contact Website.Integration.API@coxautoinc.com; no endpoints or auth published.
+  - url: https://www.dealer.com/integrations/
+    type: Documentation
+    note: Dealer.com integrations overview across partner categories.
+  - url: https://www.dealer.com/company-news/data-integration-unlocks-website-personalization-press-release/
+    type: Documentation
+    note: Website Experience Optimization personalization using Autotrader/KBB behavior; managed product, no public API.
+  - url: https://developer.coxautoinc.com/
+    type: Documentation
+    note: Cox Automotive Integration Platform developer portal; OAuth/Okta; leads and other REST APIs for approved partners.
+  - url: https://developer.coxautoinc.com/marketingcontent/exploreproducts
+    type: Documentation
+    note: Explore-products portal shell; OAuth infrastructure (Okta), REST APIs behind partner access.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists, and Dealer.com publishes no open public
+    API. The partner capabilities are modeled in apis.yml with
+    endpointsModeled: true and no fabricated endpoints. No AsyncAPI document was
+    created because there is no documented server-push transport (WebSocket or
+    SSE) on Dealer.com's own surface to model.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
