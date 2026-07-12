@@ -136,6 +136,10 @@ apis:
     through the Integrated Partner Program; no public endpoints or authentication
     scheme are documented. Endpoints modeled, not sourced.
 common:
+- type: VulnerabilityDisclosure
+  url: security/dealer-com-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/dealer-com-domain-security.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/dealer-com
 - type: Website
