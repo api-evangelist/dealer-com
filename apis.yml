@@ -14,146 +14,78 @@ description: >-
   does not publish an open, self-serve public API; the endpoints modeled here
   are logical groupings of the partner capabilities, not a documented public
   surface.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: approval
+  trial: false
+  try_now: false
+  public: false
+  label: Requires approval
+  confidence: medium
+  source:
+    - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dealer-com.png
 tags:
-- Automotive
-- Dealership
-- Digital Marketing
-- Website Platform
-- Inventory
-- Leads
-- Digital Advertising
-- Cox Automotive
-- Partner Program
+  - Automotive
+  - Dealership
+  - Digital Marketing
+  - Website Platform
+  - Inventory
+  - Leads
+  - Digital Advertising
+  - Cox Automotive
+  - Partner Program
 created: '2026-07-10'
-modified: '2026-07-10'
+modified: '2026-07-25'
 specificationVersion: '0.19'
 apis:
-- aid: dealer-com:dealer-com-website-integration-api
-  name: Dealer.com Website Integration API
-  tags:
-  - Website
-  - Integration
-  - Partners
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.dealer.com/products/integrated-partner-program
-  endpointsModeled: true
-  properties:
-  - url: https://www.dealer.com/resources/new-website-integration-api-delivers-cutting-edge-third-party-experience-on-dealer-com-platform/
-    type: Documentation
-  - url: https://www.dealer.com/products/integrated-partner-program
-    type: Documentation
-  description: >-
-    Partner-gated interface that lets approved third parties place and control
-    their own experiences on the Dealer.com website platform without custom
-    per-dealer integrations, while Dealer.com monitors performance and protects
-    dealer data. Access is arranged through the Integrated Partner Program;
-    onboarding contact is Website.Integration.API@coxautoinc.com. No public
-    endpoints, base URL, or authentication scheme are documented - the capability
-    is modeled here, not sourced from an open specification.
-- aid: dealer-com:dealer-com-inventory-imagery-api
-  name: Dealer.com Inventory and Imagery API
-  tags:
-  - Inventory
-  - Imagery
-  - Feeds
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.dealer.com/integrations/
-  endpointsModeled: true
-  properties:
-  - url: https://www.dealer.com/integrations/
-    type: Documentation
-  - url: https://www.dealer.com/products/integrated-partner-program
-    type: Documentation
-  description: >-
-    Logical grouping for the vehicle inventory and imagery integrations exposed
-    to certified partners - photography, 360-degree spins, video, and image
-    optimization tools that read and enrich dealer inventory shown on Dealer.com
-    sites. Inventory feed and market pricing data is also reachable via the wider
-    Cox Automotive Integration Platform. Partner-gated; endpoints are modeled,
-    not documented publicly.
-- aid: dealer-com:dealer-com-leads-api
-  name: Dealer.com Leads API
-  tags:
-  - Leads
-  - CRM
-  - Digital Retail
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://developer.coxautoinc.com/
-  endpointsModeled: true
-  properties:
-  - url: https://developer.coxautoinc.com/
-    type: Documentation
-  - url: https://www.dealer.com/products/integrated-partner-program
-    type: Documentation
-  description: >-
-    Lead generation and management capability - pre-qualification, messaging,
-    and customer-engagement tools that capture website leads and route them into
-    dealer CRM and Cox Automotive systems (Dealertrack, VinSolutions). The Cox
-    Automotive Integration Platform documents Lead Management operations to view,
-    create, and update leads, including trade-ins and vehicles of interest, but
-    behind OAuth and an approved partner agreement. Endpoints modeled, not an
-    open public surface.
-- aid: dealer-com:dealer-com-website-personalization-api
-  name: Dealer.com Website Personalization API
-  tags:
-  - Personalization
-  - Content
-  - Optimization
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.dealer.com/company-news/data-integration-unlocks-website-personalization-press-release/
-  endpointsModeled: true
-  properties:
-  - url: https://www.dealer.com/company-news/data-integration-unlocks-website-personalization-press-release/
-    type: Documentation
-  - url: https://www.dealer.com/products/integrated-partner-program
-    type: Documentation
-  description: >-
-    Website Experience Optimization capability that personalizes inventory,
-    content, specials, and assets on dealer sites using cross-platform shopper
-    behavior from Autotrader and Kelley Blue Book. Delivered as a managed
-    Dealer.com product rather than a documented public API; no endpoints,
-    schema, or authentication are published. Modeled here for catalog
-    completeness.
-- aid: dealer-com:dealer-com-digital-advertising-api
-  name: Dealer.com Digital Advertising API
-  tags:
-  - Advertising
-  - Marketing
-  - Analytics
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.dealer.com/products/integrated-partner-program
-  endpointsModeled: true
-  properties:
-  - url: https://www.dealer.com/products/integrated-partner-program
-    type: Documentation
-  - url: https://www.dealer.com/integrations/
-    type: Documentation
-  description: >-
-    Digital advertising and marketing integration - paid search, display,
-    social, and video advertising plus analytics tied to Dealer.com sites and
-    the Cox Automotive advertising stack. Available to certified partners
-    through the Integrated Partner Program; no public endpoints or authentication
-    scheme are documented. Endpoints modeled, not sourced.
+  - aid: dealer-com:dealer-com-leads-api
+    name: Dealer.com Leads API
+    tags:
+      - Leads
+      - CRM
+      - Digital Retail
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.coxautoinc.com/
+    endpointsModeled: true
+    properties:
+      - url: https://developer.coxautoinc.com/
+        type: Documentation
+      - url: https://www.dealer.com/products/integrated-partner-program
+        type: Documentation
+    description: >-
+      Lead generation and management capability - pre-qualification, messaging,
+      and customer-engagement tools that capture website leads and route them into
+      dealer CRM and Cox Automotive systems (Dealertrack, VinSolutions). The Cox
+      Automotive Integration Platform documents Lead Management operations to view,
+      create, and update leads, including trade-ins and vehicles of interest, but
+      behind OAuth and an approved partner agreement. Endpoints modeled, not an
+      open public surface.
 common:
-- type: VulnerabilityDisclosure
-  url: security/dealer-com-vulnerability-disclosure.yml
-- type: DomainSecurity
-  url: security/dealer-com-domain-security.yml
-- type: LinkedIn
-  url: https://www.linkedin.com/company/dealer-com
-- type: Website
-  url: https://www.dealer.com
-- type: Documentation
-  url: https://www.dealer.com/products/integrated-partner-program
-- type: Documentation
-  url: https://developer.coxautoinc.com/
-- type: Plans
-  url: plans/dealer-com-plans-pricing.yml
-- type: RateLimits
-  url: rate-limits/dealer-com-rate-limits.yml
-- type: FinOps
-  url: finops/dealer-com-finops.yml
+  - type: VulnerabilityDisclosure
+    url: security/dealer-com-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/dealer-com-domain-security.yml
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/dealer-com
+  - type: Website
+    url: https://www.dealer.com
+  - type: Documentation
+    url: https://www.dealer.com/products/integrated-partner-program
+  - type: Documentation
+    url: https://developer.coxautoinc.com/
+  - type: Plans
+    url: plans/dealer-com-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/dealer-com-rate-limits.yml
+  - type: FinOps
+    url: finops/dealer-com-finops.yml
+  - type: ProductPage
+    url: https://www.dealer.com/integrations/
+  - type: News
+    url: https://www.dealer.com/company-news/data-integration-unlocks-website-personalization-press-release/
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com

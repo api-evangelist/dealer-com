@@ -25,19 +25,7 @@ Dealer.com, a Cox Automotive brand, builds automotive dealership websites, digit
 
 ## APIs (modeled partner capabilities)
 
-### Dealer.com Website Integration API
 
-Partner-gated interface that lets approved third parties place and control their own experiences on the Dealer.com website platform without custom per-dealer integrations, while Dealer.com monitors performance and protects dealer data. Onboarding contact: `Website.Integration.API@coxautoinc.com`. No public endpoints, base URL, or authentication scheme are documented.
-
-- **Human URL:** [Integrated Partner Program](https://www.dealer.com/products/integrated-partner-program)
-- `endpointsModeled: true`
-
-### Dealer.com Inventory and Imagery API
-
-Vehicle inventory and imagery integrations for certified partners — photography, 360-degree spins, video, and image optimization tools that read and enrich dealer inventory. Inventory feed and market pricing data is also reachable through the Cox Automotive Integration Platform. Partner-gated.
-
-- **Human URL:** [Dealer.com Integrations](https://www.dealer.com/integrations/)
-- `endpointsModeled: true`
 
 ### Dealer.com Leads API
 
@@ -46,19 +34,7 @@ Lead generation and management — pre-qualification, messaging, and customer-en
 - **Human URL:** [Cox Automotive Integration Platform](https://developer.coxautoinc.com/)
 - `endpointsModeled: true`
 
-### Dealer.com Website Personalization API
 
-Website Experience Optimization capability that personalizes inventory, content, specials, and assets on dealer sites using cross-platform shopper behavior from Autotrader and Kelley Blue Book. Delivered as a managed product, not a documented public API.
-
-- **Human URL:** [Data Integration press release](https://www.dealer.com/company-news/data-integration-unlocks-website-personalization-press-release/)
-- `endpointsModeled: true`
-
-### Dealer.com Digital Advertising API
-
-Digital advertising and marketing integration — paid search, display, social, and video advertising plus analytics tied to Dealer.com sites and the Cox Automotive advertising stack. Available to certified partners through the Integrated Partner Program.
-
-- **Human URL:** [Integrated Partner Program](https://www.dealer.com/products/integrated-partner-program)
-- `endpointsModeled: true`
 
 ## Common Properties
 
