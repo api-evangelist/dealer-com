@@ -1,0 +1,135 @@
+generated: '2026-08-12'
+method: probed
+source: live GET of /.well-known/* on every Dealer.com and Cox Automotive host in apis.yml
+provider: Dealer.com
+providerId: dealer-com
+description: >-
+  Well-known probe across every host this profile touches. www.dealer.com serves a real
+  RFC 9116 security.txt (Cox Automotive Security Engineering) and nothing else; every other
+  well-known path on that host returns a WordPress 404 page. developer.coxautoinc.com is a
+  single-page dev portal whose catch-all answers HTTP 200 with an HTML shell for every
+  /.well-known/* path — those are recorded as misses, not hits. developer.inv.dealer.com is a
+  CloudFront/S3 static site that returns S3 AccessDenied (403) for any path it does not hold.
+  Dealer.com does publish one machine-readable key document, but not at a well-known path:
+  the Integrated Partner Program JWK Set at https://api.web.dealer.com/ipp/keys/jwks.json
+  (captured in authentication/dealer-com-ipp-jwks.json).
+hosts:
+  - host: www.dealer.com
+    paths:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/plain;charset=utf-8
+        hit: true
+        file: dealer-com-security.txt
+      - path: /.well-known/openid-configuration
+        status: 404
+        hit: false
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        hit: false
+      - path: /.well-known/api-catalog
+        status: 404
+        hit: false
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        hit: false
+      - path: /.well-known/agent-card.json
+        status: 404
+        hit: false
+      - path: /.well-known/agent.json
+        status: 404
+        hit: false
+  - host: developer.inv.dealer.com
+    note: >-
+      CloudFront in front of S3; any object that does not exist returns 403 AccessDenied
+      rather than 404. No well-known documents are published.
+    paths:
+      - path: /.well-known/security.txt
+        status: 403
+        hit: false
+      - path: /.well-known/openid-configuration
+        status: 403
+        hit: false
+      - path: /.well-known/oauth-authorization-server
+        status: 403
+        hit: false
+      - path: /.well-known/api-catalog
+        status: 403
+        hit: false
+      - path: /.well-known/ai-plugin.json
+        status: 403
+        hit: false
+      - path: /.well-known/agent-card.json
+        status: 403
+        hit: false
+  - host: api.web.dealer.com
+    note: >-
+      Serves the Integrated Partner Program JWK Set at /ipp/keys/jwks.json (HTTP 200, 31 RSA
+      signing keys) but publishes nothing under /.well-known/.
+    paths:
+      - path: /ipp/keys/jwks.json
+        status: 200
+        content_type: application/json
+        hit: true
+        well_known: false
+        file: ../authentication/dealer-com-ipp-jwks.json
+      - path: /.well-known/jwks.json
+        status: 404
+        hit: false
+      - path: /.well-known/openid-configuration
+        status: 404
+        hit: false
+      - path: /.well-known/security.txt
+        status: 404
+        hit: false
+      - path: /.well-known/api-catalog
+        status: 404
+        hit: false
+      - path: /.well-known/agent-card.json
+        status: 404
+        hit: false
+  - host: developer.coxautoinc.com
+    note: >-
+      Cox Automotive Integration Platform dev portal. Angular SPA behind CloudFront; the
+      catch-all returns HTTP 200 with the same 7,110-byte HTML shell for every
+      /.well-known/* path. These 200s carry no document and are recorded as MISSES.
+    paths:
+      - path: /.well-known/openid-configuration
+        status: 200
+        hit: false
+        reason: SPA HTML shell, not a document
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        hit: false
+        reason: SPA HTML shell, not a document
+      - path: /.well-known/api-catalog
+        status: 200
+        hit: false
+        reason: SPA HTML shell, not a document
+      - path: /.well-known/security.txt
+        status: 403
+        hit: false
+      - path: /.well-known/agent-card.json
+        status: 403
+        hit: false
+      - path: /.well-known/agent.json
+        status: 403
+        hit: false
+related:
+  - name: Okta authorization server (Cox Automotive Integration Platform)
+    url: https://rapi-storefront-prod.okta.com/.well-known/openid-configuration
+    status: 200
+    note: >-
+      The OIDC discovery document for the Okta tenant the Cox Automotive Integration Platform
+      dev portal authenticates against (rapi-storefront-prod.okta.com, named in the portal's
+      own window.devPortalConfig). It is Okta's document, not a Dealer.com-hosted one, so it
+      is recorded here as context and NOT wired as a Dealer.com WellKnown pointer.
+summary:
+  hosts_probed: 4
+  paths_probed: 25
+  real_hits: 2
+  well_known_hits: 1
+  agent_card_found: false
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

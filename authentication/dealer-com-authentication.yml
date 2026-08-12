@@ -1,0 +1,126 @@
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://developer.inv.dealer.com/content/accounts/accounts-home.html
+  - https://developer.inv.dealer.com/content/inventory/inventory-home.html
+  - https://dealerdotcom.github.io/web-integration-api-docs/
+description: >-
+  Dealer.com runs two distinct, publicly documented authentication models, one per API family.
+  The Dealer Developer Portal APIs (Accounts, Incentives, Inventory — the "Vehicle Consumer
+  Display API") use a single API key issued on registration, passed either as an `api_key`
+  query parameter or as a request header. The Website Integration API — the browser-side
+  Integrated Partner Program surface — uses no key at call time; instead Dealer.com signs a
+  JWT asserting that it rendered a given page, for a given account, on a given domain, with
+  given vehicles, and publishes the rotating RSA public keys as a JWK Set the partner
+  validates server-side before releasing paid content.
+schemes:
+  - id: api_key_query
+    type: apiKey
+    in: query
+    name: api_key
+    description: >-
+      Authorized API key issued per consumer on registration at the Cox Automotive Developer
+      Network. Documented form is {protocol}://api.dealer.com/{endpoint}?api_key={API key}.
+      Required on every call.
+    required: true
+    applies_to:
+      - Dealer.com Accounts API
+      - Dealer.com Incentives API
+      - Dealer.com Inventory (Vehicle / Equipment / Price) API
+    registration: https://coxautoinc.mashery.com/member/register
+    evidence: >-
+      "Requests to the API are authenticated using API key authentication. Simply provide the
+      key in either a header or query string parameter and requests will be authenticated as
+      the corresponding consumer." — Dealer Developer Portal, General Concepts.
+  - id: api_key_header
+    type: apiKey
+    in: header
+    name: api_key
+    description: >-
+      The Accounts API general-concepts page states the key "must be provided in either query
+      string or request header". The exact header name is not published; the Swagger UI shipped
+      with the portal wires the key as a query parameter named api_key.
+    required: false
+    confidence: medium
+    applies_to:
+      - Dealer.com Accounts API
+      - Dealer.com Incentives API
+      - Dealer.com Inventory (Vehicle / Equipment / Price) API
+  - id: ipp_integration_key
+    type: apiKey
+    in: config
+    name: integration key
+    description: >-
+      Integrated Partner Program integration key, issued after enrollment. It identifies the
+      partner integration to the Dealer.com website platform; it is configured on the
+      integration rather than sent on a public HTTP call.
+    required: true
+    applies_to:
+      - Dealer.com Website Integration API
+    registration: https://forms.dealer.com/integrated-partner-program.htm
+    contact: IntegratedPartners@coxautoinc.com
+  - id: ipp_jwt
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: >-
+      Loosely-coupled content-delivery authentication. API.utils.getJwtForSite() and
+      API.utils.getJwtForVehicles() return JWTs asserting that Dealer.com rendered a page
+      containing specific vehicles, on a specific domain, for a specific account. The partner
+      validates the RS256 signature against Dealer.com's published JWK Set and decides whether
+      to serve paid content. Dealer.com issues an `iat` claim but deliberately issues NO `exp`
+      claim — the consumer must define its own freshness window. An implicit expiry is reached
+      when the signing keypair's public key stops being published.
+    applies_to:
+      - Dealer.com Website Integration API
+    standards:
+      - RFC 7515 (JWS)
+      - RFC 7517 (JWK)
+      - RFC 7519 (JWT)
+  - id: cox_platform_oauth
+    type: oauth2
+    description: >-
+      Platform-level Cox Automotive Integration Platform APIs (leads, inventory, deal, digital
+      retail) at developer.coxautoinc.com authenticate with OAuth against an Okta tenant
+      (rapi-storefront-prod.okta.com) and require an approved partner agreement. The OIDC
+      discovery document is anonymous and readable; the API reference behind it is not.
+    required: true
+    applies_to:
+      - Dealer.com Leads API
+    discovery: https://rapi-storefront-prod.okta.com/.well-known/openid-configuration
+    grant_types_documented: false
+    scopes_documented: false
+    note: >-
+      Okta's discovery document advertises authorization_code, implicit, refresh_token,
+      password and client_credentials, but Cox Automotive publishes no scope reference, so no
+      scopes/ artifact is authored.
+key_material:
+  - name: Integrated Partner Program JWK Set
+    url: https://api.web.dealer.com/ipp/keys/jwks.json
+    status: 200
+    file: dealer-com-ipp-jwks.json
+    fetched: '2026-08-12'
+    key_count: 31
+    kty: RSA
+    alg: RS256
+    use: sig
+    rotation: >-
+      Keys rotate. Dealer.com publishes each public key well before the matching private key
+      is used to sign, so a consumer polling the set can always validate a fresh token.
+      Consumers SHOULD poll and cache briefly and SHOULD NOT cache keys for long, so revoked
+      keys drop out promptly.
+    served_from: Dealer.com CDN over HTTPS on a *.dealer.com domain
+gaps:
+  - No OAuth 2.0 or OpenID Connect on the Dealer.com-branded developer APIs — a single
+    long-lived API key in a query string is the whole model.
+  - The header form of the API key is documented as supported but the header NAME is never
+    published, so an integrator cannot use it without asking support.
+  - No key rotation, expiry, or revocation policy is published for the api_key credential.
+  - No scopes or permission model; access is scoped by which dealer accounts the consumer has
+    been authorized for, out of band.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,88 @@
+generated: '2026-08-12'
+method: searched
+source: https://github.com/sanjibani/cox-automotive-mcp
+provider: Dealer.com
+providerId: dealer-com
+official: false
+status: third-party
+description: >-
+  Dealer.com and Cox Automotive publish NO first-party MCP server. No MCP endpoint responds on
+  any Dealer.com or Cox Automotive host, and no MCP server appears in the DealerDotCom GitHub
+  organization or on developer.inv.dealer.com. One community server exists and is recorded here
+  for completeness only: sanjibani/cox-automotive-mcp, which wraps the publicly documented
+  Dealer Developer Portal APIs (Accounts, Incentives, Inventory) behind FastMCP and an
+  api_key-authenticated httpx client. Because it is not published by the provider, NO
+  `MCPServer` pointer is emitted in apis.yml — doing so would credit Dealer.com with an agent
+  surface it does not ship.
+first_party:
+  exists: false
+  probes:
+    - url: https://www.dealer.com/.well-known/ai-plugin.json
+      status: 404
+    - url: https://api.web.dealer.com/.well-known/agent-card.json
+      status: 404
+    - url: https://developer.inv.dealer.com/.well-known/agent-card.json
+      status: 403
+    - url: https://developer.coxautoinc.com/.well-known/agent.json
+      status: 403
+  checked: '2026-08-12'
+third_party_servers:
+  - name: cox-automotive-mcp
+    author: sanjibani
+    repository: https://github.com/sanjibani/cox-automotive-mcp
+    listing: https://glama.ai/mcp/servers/sanjibani/cox-automotive-mcp
+    transport: stdio (FastMCP)
+    hosted_url: none — self-hosted
+    license: see repository
+    stars: 2
+    last_updated: '2026-07-16'
+    credential: COX_AUTO_API_KEY — the same Dealer Developer Portal API key
+    backing_apis:
+      - Dealer.com Accounts API
+      - Dealer.com Incentives API
+      - Dealer.com Inventory (Vehicle) API
+    tools:
+      - name: health_check
+        description: Verify COX_AUTO_API_KEY works.
+      - name: list_accounts
+        description: Paginated list of dealer accounts the API key can access.
+      - name: iter_accounts
+        description: Flat list of all accounts (auto-paginates).
+      - name: get_account
+        description: One dealer account by id.
+      - name: list_incentives
+        description: Paginated incentives (rebates, finance offers) for an account.
+      - name: get_incentive
+        description: One incentive by id within an account.
+      - name: search_incentives
+        description: Filter incentives by vehicle make/model/year.
+      - name: list_inventory
+        description: Paginated vehicles in a dealer's inventory.
+      - name: iter_inventory
+        description: Flat list of all inventory vehicles (auto-paginates).
+      - name: get_vehicle
+        description: One vehicle listing by id.
+      - name: create_vehicle
+        description: Add a vehicle to inventory.
+      - name: update_vehicle
+        description: Update fields on a vehicle (price, mileage, photos, status).
+      - name: delete_vehicle
+        description: Remove a vehicle from inventory.
+      - name: search_inventory
+        description: Filter inventory by make/model/year/price range.
+    caveat: >-
+      Four of these tools (create_vehicle, update_vehicle, delete_vehicle, and the write path
+      generally) assert write operations that Dealer.com's published reference does NOT
+      document — the Developer Portal documents GET endpoints only. Treat the write tools as
+      the author's assumption about an undocumented surface, not as evidence that Dealer.com
+      publishes one.
+crosswalk:
+  emitted: false
+  reason: >-
+    A tool crosswalk binds MCP tools to OpenAPI operationIds. Dealer.com publishes no parseable
+    OpenAPI (its five Swagger documents have contained an AWS API Gateway error string since
+    2020), and the MCP server is not first-party, so there is nothing on either side to bind
+    against without inventing operationIds.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

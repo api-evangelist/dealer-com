@@ -4,7 +4,10 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Dealer.com
 providerId: dealer-com
 created: '2026-07-10'
-modified: '2026-07-10'
+modified: '2026-08-12'
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/home.html
 reconciled: false
 tags:
 - Automotive
@@ -22,15 +25,60 @@ description: >-
   marketing) are sold to dealers on enterprise contracts. No public per-call or
   per-tier API pricing is published.
 notes: >-
-  All entries below reflect an enterprise / contact-sales model. There is no
-  published free tier, usage-metered tier, or public rate card for Dealer.com
-  API access. Verify current partner terms with Cox Automotive during any
-  reconciliation.
+  Updated 2026-08-12. There is still no public rate card, but the picture is not
+  purely contact-sales: the Dealer Developer Portal (developer.inv.dealer.com)
+  offers self-registration for an API key with a PUBLISHED default quota of 2
+  calls/second and 5,000 calls/day, raised case-by-case. What is not published is
+  the price of that key, or whether it carries one at all — the registration flow
+  at coxautoinc.mashery.com is the only place that would say. The Integrated
+  Partner Program and the Cox Automotive Integration Platform remain enterprise /
+  negotiated. plan_count 3. Verify current partner terms with Cox Automotive
+  during any reconciliation.
 sources:
+- https://developer.inv.dealer.com/content/home.html
+- https://developer.inv.dealer.com/content/inventory/inventory-home.html
+- https://coxautoinc.mashery.com/member/register
 - https://www.dealer.com/products/integrated-partner-program
 - https://www.dealer.com/integrations/
 - https://developer.coxautoinc.com/
 plans:
+- id: dealer-com-developer-portal-key
+  name: Dealer Developer Portal API Key
+  type: registration
+  description: >-
+    Self-registered API key for the Dealer.com Developer Portal read APIs (Accounts,
+    Incentives, Inventory / Vehicle / Equipment / Price). Registration is at the Cox
+    Automotive Developer Network. Dealer.com publishes the QUOTA attached to this tier
+    but publishes no price for it, and access to data is further constrained: the
+    dealer and vehicle datasets are limited to Dealer.com clients, and each consumer
+    only sees the accounts they have been authorized for.
+  entries:
+  - label: Default request quota
+    name: default_quota_per_second
+    type: quota
+    metric: requests
+    limit: 2
+    timeFrame: second
+    geo: north-america
+    unit: 1
+    price: not published
+    userMultiplied: false
+  - label: Default daily quota
+    name: default_quota_per_day
+    type: quota
+    metric: requests
+    limit: 5000
+    timeFrame: day
+    geo: north-america
+    unit: 1
+    price: not published
+    userMultiplied: false
+  elements:
+  - name: Accounts API
+  - name: Incentives API
+  - name: Inventory API (Vehicle, Equipment, Price)
+  - name: API key authentication
+  - name: Case-by-case rate limit increases
 - id: dealer-com-integrated-partner
   name: Integrated Partner Program
   type: enterprise

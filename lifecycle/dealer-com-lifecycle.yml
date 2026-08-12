@@ -1,0 +1,135 @@
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/accounts/accounts-home.html
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://developer.inv.dealer.com/
+  - https://github.com/DealerDotCom/web-integration-api-docs
+description: >-
+  Lifecycle posture for Dealer.com's two published API families. The Website Integration API is
+  the maintained one: its documentation is versioned in public git with a Keep a Changelog
+  file, though the last entry is 2024-07-24. The Dealer Developer Portal APIs (Accounts,
+  Incentives, Inventory) declare "version 1.0" in prose and show clear signs of decay — the
+  five Swagger JSON documents the portal's own API Explorer loads have contained an AWS API
+  Gateway error string since February 2020, and the base URL the docs instruct every client to
+  call, https://api.dealer.com, does not resolve in DNS.
+versioning:
+  scheme: prose-declared
+  current_version: '1.0'
+  in_url: false
+  in_header: false
+  payload_discriminator: '@type (e.g. acct_v1)'
+  policy_published: false
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation policy, no RFC 8594 Sunset/Deprecation header contract, and no announced
+    end-of-life for any endpoint. The response payloads DO carry a per-link `deprecation`
+    field in the HAL-style links[] array, so the transport has a slot for it, but nothing
+    published says what would ever be written there or how much notice a partner would get.
+    No `Deprecation` pointer is emitted in apis.yml because no policy exists.
+sla:
+  published: false
+  uptime_target: not published
+  support_response_target: not published
+status_page:
+  url: https://coxautoapi.statuspage.io
+  name: Cox Automotive API
+  probed: '2026-08-12'
+  status: 200
+  api: https://coxautoapi.statuspage.io/api/v2/status.json
+  components_observed: 71
+  scope: >-
+    This is the Cox Automotive API platform status page, not a Dealer.com-branded one. It is
+    recorded here because it is the status page for the Cox Automotive Integration Platform —
+    the platform-level surface this profile already documents as Dealer.com's partner API
+    route (developer.coxautoinc.com) — and Cox Automotive's own developer portal names it as
+    its status page in the portal's window.devPortalConfig.statusPageUrl. It covers Cox
+    Automotive components (Dealertrack Leads, Digital Retailing, Inventory Solutions,
+    VinSolutions, vAuto, Xtime and others); it does NOT cover the Dealer Developer Portal
+    APIs at developer.inv.dealer.com.
+  gap: >-
+    The Dealer Developer Portal error table tells clients to "check our API Status" for
+    502/503/504 but links to no status page. status.dealer.com does not resolve.
+decay_findings:
+  - id: dead-documented-base-url
+    severity: high
+    finding: >-
+      Every Dealer Developer Portal reference page instructs clients to call
+      https://api.dealer.com/{endpoint}?api_key={key}. api.dealer.com returns NXDOMAIN — the
+      host has no DNS record at all.
+    evidence:
+      - url: https://api.dealer.com/
+        status: 0
+        note: 'curl: (6) Could not resolve host'
+      - url: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+        status: 200
+    checked: '2026-08-12'
+  - id: swagger-documents-contain-an-error-string
+    severity: high
+    finding: >-
+      The portal's API Explorer loads five Swagger definitions from
+      /swagger-docs/{accounts,incentives,equipment,vehicles,price}/vcda_*.json. All five return
+      HTTP 200 with a 42-byte body: {"message":"Missing Authentication Token"} — an AWS API
+      Gateway error that was captured and saved over the spec. The S3 Last-Modified on every
+      one of them is 2020-02-13, so the interactive console has been broken for six years and
+      there is no machine-readable contract to harvest.
+    evidence:
+      - url: https://developer.inv.dealer.com/swagger-docs/accounts/vcda_accounts.json
+        status: 200
+        note: 'body is {"message":"Missing Authentication Token"}; last-modified 2020-02-13'
+      - url: https://developer.inv.dealer.com/swagger-docs/vehicles/vcda_vehicle.json
+        status: 200
+    checked: '2026-08-12'
+  - id: accounts-service-host-gone
+    severity: medium
+    finding: >-
+      The documented Accounts sample response self-links to
+      https://accounts.inv.dealer.com/accounts/id/ddcdemo. That host no longer resolves, while
+      the sibling service hosts vehicles/incentives/equipment/price.inv.dealer.com are live
+      (AWS API Gateway, 403 without a key).
+    evidence:
+      - url: https://accounts.inv.dealer.com/
+        status: 0
+      - url: https://vehicles.inv.dealer.com/
+        status: 403
+    checked: '2026-08-12'
+  - id: web-integration-docs-stale
+    severity: low
+    finding: >-
+      The Website Integration API documentation repository's last release entry is
+      v2024-07-24T16.03.32 (2024-07-24), a little over two years before this check.
+    evidence:
+      - url: https://github.com/DealerDotCom/web-integration-api-docs/blob/master/CHANGELOG.md
+        status: 200
+    checked: '2026-08-12'
+stages:
+  - api: Dealer.com Website Integration API
+    stage: production
+    documented_publicly: true
+    docs: https://dealerdotcom.github.io/web-integration-api-docs/
+    source: https://github.com/DealerDotCom/web-integration-api-docs
+    access: Integrated Partner Program enrollment required for an integration key
+  - api: Dealer.com Accounts API
+    stage: production (documented; contract and gateway decayed)
+    documented_publicly: true
+    docs: https://developer.inv.dealer.com/content/accounts/accountsApi.html
+    access: API key from the Cox Automotive Developer Network
+  - api: Dealer.com Incentives API
+    stage: production (documented; contract and gateway decayed)
+    documented_publicly: true
+    docs: https://developer.inv.dealer.com/content/incentives/incentivesApi.html
+  - api: Dealer.com Inventory API (Vehicle / Equipment / Price)
+    stage: production (documented; contract and gateway decayed)
+    documented_publicly: true
+    docs: https://developer.inv.dealer.com/content/inventory/vehicleApi.html
+  - api: Cox Automotive Integration Platform (Leads and platform data)
+    stage: production
+    documented_publicly: false
+    access: OAuth (Okta) plus an approved Cox Automotive partner agreement
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

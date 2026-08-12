@@ -1,0 +1,145 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  derived from the Dealer.com published documentation captured in this repo
+  (authentication/, conventions/, errors/, well-known/, lifecycle/) plus live probes
+provider: Dealer.com
+providerId: dealer-com
+description: >-
+  Cross-cutting standards posture for Dealer.com's published API surfaces. Two genuine
+  standards conformances stand out and both belong to the Website Integration API: the JOSE
+  family (RFC 7515/7517/7519), used properly for signed page-render claims with a published
+  rotating JWK Set, and RFC 9116, served at www.dealer.com/.well-known/security.txt. Almost
+  everything else on the list is a miss — no OpenAPI, no OAuth on the Dealer.com-branded APIs,
+  no RFC 9457 problem details, no idempotency, no RFC 8594 deprecation signaling, no
+  RateLimit header fields.
+standards:
+  - id: rfc7519-jwt
+    name: JSON Web Token
+    conforms: true
+    evidence: >-
+      API.utils.getJwtForSite() / getJwtForVehicles() issue RS256 JWTs asserting account,
+      domain and vehicle claims. Dealer.com documents issuing `iat` and deliberately omitting
+      `exp`, pushing the freshness decision to the consumer.
+    source: https://dealerdotcom.github.io/web-integration-api-docs/
+  - id: rfc7517-jwk
+    name: JSON Web Key Set
+    conforms: true
+    evidence: >-
+      Live JWK Set at https://api.web.dealer.com/ipp/keys/jwks.json — HTTP 200, 31 RSA keys,
+      each with kty/kid/use/alg, served over HTTPS from a *.dealer.com CDN host. Public keys
+      are published ahead of first signing use and removed on invalidation.
+    source: https://api.web.dealer.com/ipp/keys/jwks.json
+  - id: rfc7515-jws
+    name: JSON Web Signature
+    conforms: true
+    evidence: RS256-signed claims validated by the partner against the published JWK Set.
+  - id: rfc9116-security-txt
+    name: security.txt
+    conforms: true
+    evidence: >-
+      https://www.dealer.com/.well-known/security.txt returns 200 with Contact, Encryption,
+      Policy and Expires fields (Cox Automotive Security Engineering, expires 2026-12-31).
+    source: https://www.dealer.com/.well-known/security.txt
+  - id: hateoas
+    name: Hypermedia links in responses
+    conforms: true
+    evidence: >-
+      Every Developer Portal resource carries a HAL-shaped links[] array with rel/href/
+      templated/deprecation. Not formally HAL (no _links / _embedded, no application/hal+json
+      media type), so recorded as hypermedia-flavored rather than HAL-conformant.
+  - id: pagination
+    name: Documented pagination
+    conforms: true
+    evidence: >-
+      Offset pagination via start and size query parameters on every collection endpoint.
+      Partial: no total, no next link, no documented default or maximum page size.
+  - id: openapi
+    name: OpenAPI / Swagger
+    conforms: false
+    evidence: >-
+      The provider ships five Swagger 2.0 definition URLs and its own API Explorer loads them,
+      but all five have returned {"message":"Missing Authentication Token"} since 2020-02-13.
+      No parseable specification is published anywhere.
+  - id: asyncapi
+    name: AsyncAPI
+    conforms: false
+    evidence: >-
+      No event or streaming HTTP surface exists. The versioned event bus in the Website
+      Integration API is in-browser pub/sub, not a network protocol.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: >-
+      The Dealer.com-branded Developer Portal APIs use a single API key in a query string. OAuth
+      exists only on the separately gated Cox Automotive Integration Platform
+      (rapi-storefront-prod.okta.com), whose reference is not public and which publishes no
+      scope documentation.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: >-
+      No Dealer.com host serves an openid-configuration document. The Okta tenant behind the
+      Cox Automotive dev portal does, but that is Okta's document, not Dealer.com's.
+  - id: rfc9457
+    name: Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      Errors are documented as a status-code troubleshooting table. Observed error bodies are
+      the AWS API Gateway default {"message": "..."} with no type/title/detail/instance.
+  - id: idempotency
+    name: Idempotency keys
+    conforms: false
+    evidence: >-
+      No idempotency header, scope or retention window is published. The documented surface is
+      GET-only, so the omission is defensible, but it is an omission.
+  - id: rfc8594-sunset
+    name: Sunset / Deprecation HTTP headers
+    conforms: false
+    evidence: >-
+      No Sunset or Deprecation header contract. The response links[] array does carry a
+      per-link `deprecation` field, so the transport has the slot but no policy fills it.
+  - id: rfc9110-ratelimit-headers
+    name: RateLimit header fields
+    conforms: false
+    evidence: >-
+      Hard quotas are published in prose (2 req/s, 5,000/day) but no X-RateLimit-*,
+      RateLimit-* or Retry-After header is documented, and 429 does not appear in the error
+      table.
+  - id: json-schema
+    name: JSON Schema
+    conforms: false
+    evidence: Object models are published as prose tables and sample payloads only.
+  - id: graphql
+    name: GraphQL
+    conforms: false
+    evidence: >-
+      No GraphQL endpoint on any Dealer.com host. The Cox Automotive Developer Network I/O Docs
+      page offers a GraphQL specification download, but for the VinSolutions Call Details API —
+      a different Cox brand, not Dealer.com.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: false
+    evidence: >-
+      No first-party MCP server. A third-party community server exists
+      (github.com/sanjibani/cox-automotive-mcp) — see mcp/dealer-com-mcp.yml.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json miss on every Dealer.com and Cox
+      Automotive host probed (404 on www.dealer.com and api.web.dealer.com, 403 on
+      developer.inv.dealer.com and developer.coxautoinc.com).
+compliance_certifications:
+  published: false
+  note: >-
+    No Dealer.com or Cox Automotive trust center with named certifications (SOC 2, ISO 27001,
+    PCI DSS, HIPAA, FedRAMP) was found by the security-programs probe. No `Compliance` pointer
+    is emitted, because none is published.
+summary:
+  standards_checked: 17
+  conforms: 6
+  fails: 11
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

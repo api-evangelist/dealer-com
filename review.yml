@@ -14,8 +14,45 @@ review:
     APIs that are documented there (leads, inventory, deal, digital retail) are
     request/response REST over HTTPS. There is no server-push WebSocket or SSE
     endpoint on Dealer.com's own surface to model.
+corrections:
+  - date: '2026-08-12'
+    by: API Evangelist enrichment pipeline
+    correction: |
+      The 2026-07-10 finding below overstated the gate. The WebSocket answer stands
+      (no ws:// or wss:// surface is documented anywhere), but the claim that
+      Dealer.com "does not publish an open, self-serve public API at all" is WRONG
+      and was the result of never reaching Dealer.com's own developer portal.
+
+      Dealer.com operates a public Dealer Developer Portal at
+      https://developer.inv.dealer.com/ documenting three REST API families on its
+      own domain — Accounts, Incentives and Inventory (Vehicle, Equipment, Price),
+      collectively the "Vehicle Consumer Display API". The reference is fully public
+      and requires no login. It publishes a base URL (https://api.dealer.com), a
+      version (1.0), API-key authentication via an api_key query parameter, numeric
+      quotas (2 calls/second, 5,000 calls/day, raised case-by-case), offset
+      pagination (start/size), sparse fieldsets (repeatable select), HAL-style
+      links[], full parameter tables, response samples and object models, and an
+      HTTP error table. Keys are self-registered at
+      https://coxautoinc.mashery.com/member/register.
+
+      The Website Integration API is likewise fully documented in public git at
+      https://github.com/DealerDotCom/web-integration-api-docs (rendered at
+      https://dealerdotcom.github.io/web-integration-api-docs/), with a dated
+      changelog and a live JWK Set at https://api.web.dealer.com/ipp/keys/jwks.json.
+
+      What IS true: no machine-readable specification is retrievable. All five
+      Swagger documents the portal's own API Explorer loads
+      (/swagger-docs/*/vcda_*.json) return HTTP 200 with the 42-byte body
+      {"message":"Missing Authentication Token"} and carry an S3 Last-Modified of
+      2020-02-13. The documented base host api.dealer.com returns NXDOMAIN, as does
+      accounts.inv.dealer.com, while vehicles/incentives/equipment/price
+      .inv.dealer.com are live AWS API Gateway endpoints answering 403 without a key.
+      See lifecycle/dealer-com-lifecycle.yml for the evidenced decay findings.
 findings:
   summary: |
+    SUPERSEDED IN PART — see corrections above (2026-08-12). The WebSocket answer
+    stands; the "no public API" characterization does not.
+
     Dealer.com does not publish a documented public WebSocket API - and, more
     broadly, does not publish an open, self-serve public API at all. Dealer.com
     is a Cox Automotive brand providing dealership websites, digital advertising,

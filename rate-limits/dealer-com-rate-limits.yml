@@ -4,58 +4,103 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Dealer.com
 providerId: dealer-com
 created: '2026-07-10'
-modified: '2026-07-10'
+modified: '2026-08-12'
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/inventory/inventory-home.html
 reconciled: false
 tags:
-- Automotive
-- Dealership
-- Partner Program
-- Rate Limiting
-- Quotas
+  - Automotive
+  - Dealership
+  - Partner Program
+  - Rate Limiting
+  - Quotas
 description: >-
-  Dealer.com does not publish numeric rate limits for its partner APIs. Because
-  the Website Integration API and the Cox Automotive Integration Platform are
-  partner-gated and governed by individual agreements, any throughput limits,
-  quotas, or throttling behavior are defined per partner contract and OAuth
-  client rather than by a public rate card. Dealer.com states that it monitors
-  what third parties do on the platform to protect dealer data and site
-  performance, implying per-partner governance, but no specific numbers are
-  documented.
+  Dealer.com DOES publish numeric rate limits — they were previously recorded here as
+  unpublished because the earlier pass never reached the Dealer Developer Portal at
+  developer.inv.dealer.com. The General Concepts page of both Developer Portal API families
+  states: "All API keys are issued with a default quota of 2 API calls/second and 5000 API
+  call/day. We do increase rate limits on a case-by-case basis." That default applies per API
+  key across the Accounts, Incentives and Inventory (Vehicle / Equipment / Price) APIs. The
+  separately gated Cox Automotive Integration Platform surface at developer.coxautoinc.com
+  still publishes no numbers; those remain per-partner-agreement.
 notes: >-
-  No public per-minute or per-day request limits are documented as of the review
-  date. Partners should confirm quotas, concurrency, and throttling behavior in
-  their Integrated Partner Program or Cox Automotive Integration Platform
-  agreement. Standard HTTP 429 handling with exponential backoff and Retry-After
-  is prudent against any OAuth-protected Cox platform endpoint.
+  No rate-limit RESPONSE HEADERS are published. The docs' own error table does not list a 429
+  at all, so a client is told what the quota is but not what exhaustion looks like on the
+  wire. Standard 429 handling with exponential backoff and Retry-After remains prudent but is
+  an assumption, not a documented contract.
 sources:
-- https://www.dealer.com/products/integrated-partner-program
-- https://www.dealer.com/resources/new-website-integration-api-delivers-cutting-edge-third-party-experience-on-dealer-com-platform/
-- https://developer.coxautoinc.com/
+  - https://developer.inv.dealer.com/content/inventory/inventory-home.html
+  - https://developer.inv.dealer.com/content/accounts/accounts-home.html
+  - https://www.dealer.com/products/integrated-partner-program
+  - https://developer.coxautoinc.com/
+headers:
+  rateLimitLimit: not published
+  rateLimitRemaining: not published
+  rateLimitReset: not published
+  retryAfter: not published
+  requestId: not published
 responseCodes:
-  throttled: 429
+  throttled: not published
 limits:
-- name: Website Integration API
-  scope: partner
-  metric: requests
-  limit: not published
-  notes: Governed by partner agreement and platform performance monitoring; no public numeric limit.
-- name: Cox Platform API Requests
-  scope: oauth-client
-  metric: requests
-  limit: not published
-  notes: OAuth-gated Cox Automotive Integration Platform; per-client limits defined by partner terms.
-- name: Inventory and Imagery Feeds
-  scope: partner
-  metric: records
-  limit: not published
-  notes: Feed refresh cadence and volume set by integration configuration, not a public cap.
+  - name: Dealer Developer Portal API — per-second default
+    scope: api-key
+    metric: requests_per_second
+    limit: 2
+    timeFrame: second
+    burst: not published
+    applies_to:
+      - Dealer.com Accounts API
+      - Dealer.com Incentives API
+      - Dealer.com Inventory (Vehicle / Equipment / Price) API
+    notes: Default quota issued with every API key; raised case-by-case on request.
+  - name: Dealer Developer Portal API — daily default
+    scope: api-key
+    metric: requests_per_day
+    limit: 5000
+    timeFrame: day
+    applies_to:
+      - Dealer.com Accounts API
+      - Dealer.com Incentives API
+      - Dealer.com Inventory (Vehicle / Equipment / Price) API
+    notes: Default quota issued with every API key; raised case-by-case on request.
+  - name: Cox Automotive Integration Platform requests
+    scope: oauth-client
+    metric: requests
+    limit: not published
+    notes: >-
+      OAuth-gated Cox Automotive Integration Platform (leads, inventory, deal, digital retail);
+      per-client limits are defined by partner terms, not by a public rate card.
+  - name: Website Integration API
+    scope: partner
+    metric: calls
+    limit: not published
+    notes: >-
+      Browser-side JavaScript API executed in the visitor's page; governed by the Integrated
+      Partner Program agreement and platform performance monitoring rather than a numeric cap.
+  - name: Inventory and Imagery Feeds
+    scope: partner
+    metric: records
+    limit: not published
+    notes: Feed refresh cadence and volume set by integration configuration, not a public cap.
 policies:
-- name: Platform Monitoring
-  description: Dealer.com monitors third-party activity on client websites to protect dealer data and site performance.
-- name: Per-Partner Governance
-  description: Limits and quotas are established per partner agreement rather than by a public rate card.
-- name: Backoff Strategy
-  description: Clients of OAuth-protected Cox platform endpoints should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+  - name: Case-by-case increases
+    description: >-
+      "We do increase rate limits on a case-by-case basis." Increases are requested through the
+      Cox Automotive Developer Network account rather than self-served.
+  - name: Dataset scoping
+    description: >-
+      Independently of throughput, each consumer's dataset is limited to the dealer accounts it
+      has been authorized to access, and to US and Canada inventory.
+  - name: Platform Monitoring
+    description: Dealer.com monitors third-party activity on client websites to protect dealer data and site performance.
+  - name: Per-Partner Governance
+    description: Cox Automotive Integration Platform limits and quotas are established per partner agreement.
+  - name: Backoff Strategy
+    description: >-
+      No throttling status code or header is documented. Clients should implement exponential
+      backoff with jitter and honor Retry-After if present, treating that as defensive practice
+      rather than a published contract.
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com

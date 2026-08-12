@@ -1,0 +1,85 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  npm registry search, GitHub org github.com/DealerDotCom, and
+  https://developer.inv.dealer.com/content/home.html
+provider: Dealer.com
+providerId: dealer-com
+description: >-
+  Dealer.com publishes no first-party client SDK in any package registry. The Developer Portal
+  home page tells developers to "Use the Code Library to download our SDK's on GitHub", but the
+  Code Library link is dead (client-side route with no content behind it) and the DealerDotCom
+  GitHub organization contains no client library — its 60 public repositories are forks of
+  third-party OSS (zipkin, grails, terraform, libsass, envoy) plus two documentation
+  repositories. The only first-party client artifact Dealer.com ships is the browser-side
+  Website Integration API loader, which is a platform global injected into dealer websites, not
+  an installable package.
+registries_searched:
+  - registry: npm
+    query: ['dealer.com', 'dealerdotcom', 'dealer-com']
+    first_party_hits: 0
+    note: >-
+      The three dealerdotcom-authored npm packages (jasmine-cucumber, protractor-jasmine-cucumber,
+      karma-jasmine-cucumber) are internal test tooling last published in 2015, not API clients.
+  - registry: pypi
+    first_party_hits: 0
+  - registry: rubygems
+    first_party_hits: 0
+  - registry: maven-central
+    first_party_hits: 0
+  - registry: nuget
+    first_party_hits: 0
+  - registry: packagist
+    first_party_hits: 0
+  - registry: crates.io
+    first_party_hits: 0
+  - registry: pkg.go.dev
+    first_party_hits: 0
+packages:
+  - name: window.DDC.APILoader
+    language: javascript
+    official: true
+    registry: none
+    distribution: platform-injected browser global
+    url: https://dealerdotcom.github.io/web-integration-api-docs/
+    version: null
+    published: null
+    note: >-
+      The Website Integration API loader. It is not distributed through any registry or CDN URL
+      a consumer can pin — Dealer.com injects it into the dealer's page and the partner script
+      awaits APILoader.create(). There is no version identifier exposed anywhere in the
+      documentation or on the object, so a partner cannot tell which build they are running
+      against, and neither can we. Checked 2026-08-12; nothing to record.
+  - name: ddc-ipp-auth-demo
+    language: multiple
+    official: true
+    registry: cdn
+    distribution: zip download from the documentation site
+    url: https://dealerdotcom.github.io/web-integration-api-docs/downloads/ddc-ipp-auth-demo-master.zip
+    version: null
+    published: null
+    note: >-
+      Sample application demonstrating JWK/JWT/JWS validation for the Integrated Partner
+      Program. Distributed as an unpinned "-master" zip with no release tag and no registry
+      metadata endpoint, so no version or publish date can be read. Checked 2026-08-12.
+third_party:
+  - name: cox-automotive-mcp
+    language: python
+    official: false
+    registry: pypi
+    repository: https://github.com/sanjibani/cox-automotive-mcp
+    version: null
+    published: null
+    note: >-
+      Community MCP server wrapping the Dealer.com Accounts, Incentives and Inventory APIs.
+      Not built or endorsed by Dealer.com or Cox Automotive. Recorded for completeness in
+      mcp/dealer-com-mcp.yml; no version could be read because no matching PyPI project
+      responded. Checked 2026-08-12.
+sdk_count_official: 0
+note: >-
+  No `SDKs` pointer is emitted in apis.yml. There is no installable first-party client library
+  to point at, and emitting one for a platform-injected global would credit Dealer.com with an
+  SDK program it does not run.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

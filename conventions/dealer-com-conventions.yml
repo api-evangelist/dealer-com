@@ -1,0 +1,158 @@
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/accounts/accounts-home.html
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://developer.inv.dealer.com/content/accounts/accounts-home.html
+  - https://developer.inv.dealer.com/content/inventory/inventory-home.html
+  - https://developer.inv.dealer.com/content/accounts/accountsApi.html
+  - https://developer.inv.dealer.com/content/inventory/vehicleApi.html
+  - https://developer.inv.dealer.com/content/incentives/incentivesApi.html
+description: >-
+  Cross-cutting runtime semantics for the Dealer.com Developer Portal APIs (Accounts,
+  Incentives, Inventory), read from the provider's own General Concepts and per-API reference
+  pages. The family is a read-only, key-authenticated, HAL-flavored JSON REST surface with
+  offset pagination and sparse fieldsets. It publishes no idempotency contract, no request-id
+  header, no rate-limit response headers and no versioning-in-the-URL scheme.
+auth_style:
+  model: api-key
+  transport: query parameter `api_key` (header form documented but header name unpublished)
+  detail: See authentication/dealer-com-authentication.yml
+transport:
+  protocol: HTTPS only
+  methods_documented:
+    - GET
+  media_type: application/json
+  base_url: https://api.dealer.com
+  uri_format: '{protocol}://api.dealer.com/{endpoint}?api_key={API key}'
+versioning:
+  scheme: document-declared
+  current: '1.0'
+  in_url: false
+  in_header: false
+  detail: >-
+    Both General Concepts pages say "Current version is 1.0". The version does not appear in
+    the path, in a header, or in a media type — there is no way for a client to pin it. The
+    payload does carry a per-resource type discriminator (`@type`, e.g. `acct_v1`), which is
+    the only version signal actually on the wire.
+  payload_type_discriminator: '@type'
+pagination:
+  style: offset
+  params:
+    - name: start
+      in: query
+      type: integer
+      description: Initial position where the pagination will start.
+    - name: size
+      in: query
+      type: integer
+      description: Size of each page.
+  defaults_published: false
+  max_page_size_published: false
+  response_fields:
+    total: not published
+    next: not published
+  note: >-
+    Collection endpoints return a bare JSON array. There is no envelope, no total count and no
+    next-page link, so a client cannot tell whether it has reached the end except by asking for
+    another page and getting fewer rows than it asked for.
+sparse_fieldsets:
+  supported: true
+  param: select
+  repeatable: true
+  form: '?select=make&select=model&select=year'
+  applies_to:
+    - /accounts/search
+    - /accounts/id/{accountId}
+    - /vehicles/search
+    - /vehicles/id/{uuid}
+    - /incentives
+    - /incentives/id/{uniqueId}
+  note: >-
+    `select` is the single most important convention on this API — the Vehicle resource alone
+    exposes 60+ selectable properties and the reference examples always pass an explicit list.
+    Field expansion beyond `select` is not supported.
+filtering:
+  style: flat query parameters, one per field, AND-combined
+  examples:
+    accounts: accountId, ancestorId, parentId, franchise, country, state, dealerCode, dealerCodeType
+    vehicles: category, removed, uuid, vin, accountId, associatedAccountId, stockNumber, status, certified, chromeId, make
+    incentives: uniqueId, creatorAccountId, incentiveId, accountId, incentiveType, defaultLanguage, countryCode, year, make, model
+  operators: none published (exact match only)
+hypermedia:
+  supported: true
+  style: HAL-like `links[]` array
+  fields:
+    - rel
+    - href
+    - hreflang
+    - media
+    - title
+    - type
+    - templated
+    - deprecation
+  note: >-
+    Every resource carries a `links[]` array with a `self` relation and a per-link
+    `deprecation` field — the API has a place to advertise resource-level deprecation, but no
+    published deprecation policy that says what would ever be put in it. Observed `self` hrefs
+    point at per-service hosts (accounts.inv.dealer.com, vehicles.inv.dealer.com) rather than
+    at the documented api.dealer.com gateway.
+identifiers:
+  - entity: Account
+    field: accountId
+    form: opaque dealer slug (e.g. `ddcdemo`, `crmmotorsaudi`)
+  - entity: Vehicle
+    field: uuid
+    form: 32-char hex; documented as "a combination of VIN and Account"
+  - entity: Incentive
+    field: uniqueId
+    form: '`accountID_incentiveID`'
+  - entity: Dealer code
+    field: dealerCodes[].code + codeType
+    form: external system identifiers (driverside, route-one, at-kbb, dtid, dealertrack-post)
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    Not applicable and not published. The documented Developer Portal surface exposes GET
+    operations only, so every documented call is naturally idempotent; Dealer.com publishes no
+    idempotency key, no replay window and no retention policy, and there is no documented
+    write operation that would need one. No Idempotency pointer is emitted for this provider.
+request_tracing:
+  request_id_header: not published
+  note: >-
+    The AWS API Gateway in front of the live per-service hosts returns `x-amzn-RequestId` and
+    `x-amz-apigw-id` on error responses, but Dealer.com does not document either as a
+    supported correlation identifier.
+rate_limit_signaling:
+  documented_limits: true
+  response_headers: not published
+  status_on_exhaustion: not published
+  detail: See rate-limits/dealer-com-rate-limits.yml
+errors:
+  envelope: not published
+  format: plain HTTP status codes with a prose troubleshooting table
+  rfc9457: false
+  detail: See errors/dealer-com-problem-types.yml
+webhooks:
+  supported: false
+  note: >-
+    No server-push surface. The Website Integration API publishes a versioned BROWSER-side
+    event bus (page-load-v1, dealership-info-v1, vehicle-shown-v1, vehicle-data-updated-v1)
+    consumed via API.subscribe() in the page — see components/dealer-com-components.yml. That
+    is an in-page pub/sub API, not an HTTP callback surface, so no Webhooks or AsyncAPI
+    pointer is emitted.
+data_constraints:
+  - The Inventory API's dealer and vehicle datasets are limited to Dealer.com clients.
+  - Each API consumer's dataset is limited to the accounts they have been authorized to access.
+  - Coverage is vehicles available for sale by dealerships in the United States and Canada only.
+cross_links:
+  authentication: authentication/dealer-com-authentication.yml
+  errors: errors/dealer-com-problem-types.yml
+  lifecycle: lifecycle/dealer-com-lifecycle.yml
+  rate_limits: rate-limits/dealer-com-rate-limits.yml
+  data_model: data-model/dealer-com-data-model.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

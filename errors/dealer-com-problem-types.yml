@@ -1,0 +1,74 @@
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/accounts/accounts-home.html
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://developer.inv.dealer.com/content/accounts/accounts-home.html
+  - https://developer.inv.dealer.com/content/inventory/inventory-home.html
+format: http-status-only
+rfc9457: false
+description: >-
+  Dealer.com publishes an "Error Codes & Handling" table in the General Concepts section of
+  both Developer Portal API families. It is a status-code table with human troubleshooting
+  advice — there is no application error code, no machine-readable error envelope, no
+  problem+json media type and no documented error body shape. Observed error bodies from the
+  live AWS API Gateway in front of the per-service hosts are a bare
+  {"message": "Missing Authentication Token"} object with the error class in the
+  `x-amzn-ErrorType` response header.
+envelope:
+  documented: false
+  observed:
+    media_type: application/json
+    shape: '{"message": "<string>"}'
+    headers:
+      - x-amzn-ErrorType
+      - x-amzn-RequestId
+      - x-amz-apigw-id
+    observed_on: https://vehicles.inv.dealer.com/ (HTTP 403, 2026-08-12)
+    note: >-
+      This is the AWS API Gateway default, not a Dealer.com-authored contract. It is recorded
+      as observed behavior, not as a published error format.
+problem_types:
+  - status: 400
+    title: Bad Request
+    remediation: Check the URL to make sure it has proper syntax.
+    source: docs
+  - status: 401
+    title: Unauthorized
+    remediation: You are using the wrong API key or the key isn't active.
+    source: docs
+  - status: 403
+    title: Forbidden
+    remediation: You are not authorized to access this resource.
+    source: docs
+    note: >-
+      The live gateway also returns 403 with x-amzn-ErrorType MissingAuthenticationTokenException
+      when the api_key parameter is absent entirely.
+  - status: 404
+    title: Not Found
+    remediation: Check the URL path for typos.
+    source: docs
+  - status: 502
+    title: Bad Gateway
+    remediation: If this persists, check our API Status. It might be an issue we're addressing.
+    source: docs
+  - status: 503
+    title: Service Unavailable
+    remediation: If this persists, check our API Status. It might be an issue we're addressing.
+    source: docs
+  - status: 504
+    title: Gateway Timeout
+    remediation: If this persists, check our API Status. It might be an issue we're addressing.
+    source: docs
+gaps:
+  - No 429 is documented even though the docs publish hard quotas (2 req/s, 5,000/day), so a
+    client is not told what exhaustion looks like on the wire.
+  - The remediation for 502/503/504 says "check our API Status" but the Developer Portal links
+    to no status page; status.dealer.com does not resolve.
+  - No application-level error codes, no error identifiers, and no correlation id a partner can
+    quote to support.
+  - No RFC 9457 application/problem+json.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

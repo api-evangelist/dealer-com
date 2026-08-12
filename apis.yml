@@ -3,29 +3,38 @@ url: https://raw.githubusercontent.com/api-evangelist/dealer-com/refs/heads/main
 name: Dealer.com
 kind: company
 description: >-
-  Dealer.com, a Cox Automotive brand, builds automotive dealership websites,
-  digital advertising, and digital marketing technology used by thousands of
-  franchise and independent dealers across North America. Its integration
-  surface is partner-gated: third parties embed experiences on dealer sites
-  through the Dealer.com Website Integration API and the Integrated Partner
-  Program, while inventory, leads, deal, and digital-retail data flow through
-  the broader Cox Automotive Integration Platform (developer.coxautoinc.com),
-  which uses OAuth (Okta) and requires an approved partner agreement. Dealer.com
-  does not publish an open, self-serve public API; the endpoints modeled here
-  are logical groupings of the partner capabilities, not a documented public
-  surface.
+  Dealer.com, a Cox Automotive brand, builds automotive dealership websites, digital
+  advertising, and digital marketing technology used by thousands of franchise and
+  independent dealers across North America. It publishes two distinct developer surfaces.
+  The Dealer Developer Portal at developer.inv.dealer.com documents a read-only REST family
+  — Accounts, Incentives and Inventory (Vehicle, Equipment, Price) — authenticated with a
+  single self-registered API key, with published quotas of 2 calls/second and 5,000
+  calls/day, offset pagination, sparse fieldsets via a repeatable select parameter, and
+  HAL-style hypermedia links. The Website Integration API, documented in public git at
+  github.com/DealerDotCom, is a browser-side JavaScript API that lets Integrated Partner
+  Program partners subscribe to page and vehicle events and insert markup, CTAs and gallery
+  content into named locations on dealer sites, with content-delivery authentication built
+  on signed JWTs validated against a live JWK Set. Platform-level lead, deal and
+  digital-retail data flows separately through the OAuth-gated Cox Automotive Integration
+  Platform at developer.coxautoinc.com. Both Dealer.com surfaces are documented in public;
+  the credentials, not the contracts, are what is gated. The published REST surface is
+  decaying, though — the documented base host api.dealer.com no longer resolves, and the
+  five Swagger documents the portal's own API Explorer loads have contained an AWS API
+  Gateway error string since February 2020.
 accessModel:
   pricing: unknown
-  onboarding: approval
+  onboarding: registration
   trial: false
   try_now: false
-  public: false
-  label: Requires approval
-  confidence: medium
+  public: true
+  label: Public docs, registration required
+  confidence: high
   source:
+    - https://developer.inv.dealer.com/content/home.html
+    - https://coxautoinc.mashery.com/member/register
     - plans
-  generated: '2026-07-22'
-  method: derived
+  generated: '2026-08-12'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dealer-com.png
 tags:
   - Automotive
@@ -33,14 +42,165 @@ tags:
   - Digital Marketing
   - Website Platform
   - Inventory
+  - Vehicle Data
+  - Incentives
   - Leads
   - Digital Advertising
   - Cox Automotive
   - Partner Program
 created: '2026-07-10'
-modified: '2026-07-25'
+modified: '2026-08-12'
 specificationVersion: '0.19'
 apis:
+  - aid: dealer-com:dealer-com-accounts-api
+    name: Dealer.com Accounts API
+    tags:
+      - Accounts
+      - Dealership
+      - Automotive
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.inv.dealer.com/content/accounts/accountsApi.html
+    baseURL: https://api.dealer.com
+    description: >-
+      Dealership account information for dealers who have a relationship with Dealer.com.
+      GET /accounts/search returns a filterable, paginated list; GET /accounts/id/{accountId}
+      returns one account. Payloads carry name, address, contact, web address, time-zone
+      offset, OEM franchises, external dealer codes keyed by system (driverside, route-one,
+      at-kbb), and the dealer-group hierarchy through parentIds, ancestorIds and decendantIds.
+      Filterable by accountId, ancestorId, parentId, franchise, country, state, dealerCode and
+      dealerCodeType. Sparse fieldsets via a repeatable select parameter. Note: the sample
+      response self-links to accounts.inv.dealer.com, which no longer resolves.
+    properties:
+      - url: https://developer.inv.dealer.com/content/accounts/accountsApi.html
+        type: APIReference
+      - url: https://developer.inv.dealer.com/content/accounts/accounts-home.html
+        type: Documentation
+      - url: https://developer.inv.dealer.com/accounts/accounts
+        type: Console
+  - aid: dealer-com:dealer-com-incentives-api
+    name: Dealer.com Incentives API
+    tags:
+      - Incentives
+      - Offers
+      - Automotive
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.inv.dealer.com/content/incentives/incentivesApi.html
+    baseURL: https://api.dealer.com
+    description: >-
+      Manufacturer and dealer incentive offers. GET /incentives returns a filterable,
+      paginated list; GET /incentives/id/{uniqueId} returns one offer, keyed by a composite
+      accountID_incentiveID. Each incentive carries its type (Cash, Lease, Finance), the
+      creating account or third-party feed, effective and expiration dates, title and short
+      title, three classes of disclaimer (general, state, type), offer details, an image URL,
+      priority and featured flags, language codes, and trim-level applicability through
+      vehicleTrims and globalVehicleTrimIds or through applicable make, model and year.
+    properties:
+      - url: https://developer.inv.dealer.com/content/incentives/incentivesApi.html
+        type: APIReference
+      - url: https://developer.inv.dealer.com/content/accounts/accounts-home.html
+        type: Documentation
+      - url: https://developer.inv.dealer.com/incentives/incentives
+        type: Console
+  - aid: dealer-com:dealer-com-vehicle-api
+    name: Dealer.com Vehicle API
+    tags:
+      - Inventory
+      - Vehicle Data
+      - Automotive
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.inv.dealer.com/content/inventory/vehicleApi.html
+    baseURL: https://api.dealer.com
+    description: >-
+      Vehicle inventory available for sale at Dealer.com dealerships in the United States and
+      Canada. GET /vehicles/search returns a filterable, paginated list; GET /vehicles/id/{uuid}
+      returns one vehicle, where the uuid uniquely represents a VIN and account combination.
+      Sixty-six selectable properties span identity (vin, stockNumber, chromeId, autodata ids),
+      classification (make, model, year, trim, category, certified, status), specification
+      (body style, drivetrain, engine, transmission, fuel economy, odometer, option codes),
+      appearance, and up to twenty distinct price fields including msrp, invoicePrice,
+      internetPrice, emailPrice, kbbValue and several named for specific dealer groups and CRM
+      vendors. Filterable by vin, uuid, accountId, associatedAccountId, stockNumber, status,
+      category, make, chromeId, certified and removed.
+    properties:
+      - url: https://developer.inv.dealer.com/content/inventory/vehicleApi.html
+        type: APIReference
+      - url: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+        type: Documentation
+      - url: https://developer.inv.dealer.com/inventory/vehicles
+        type: Console
+  - aid: dealer-com:dealer-com-equipment-api
+    name: Dealer.com Equipment API
+    tags:
+      - Inventory
+      - Vehicle Data
+      - Automotive
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.inv.dealer.com/content/inventory/equipment.html
+    baseURL: https://api.dealer.com
+    description: >-
+      Equipment and option data for vehicles in Dealer.com inventory, exposed as its own
+      resource alongside the Vehicle API. GET /vehicles/equipment returns a paginated list and
+      GET /vehicles/equipment/id/{uuid} returns equipment for a single vehicle, addressed by
+      the same vehicle uuid used by the Vehicle API. Part of the Inventory family documented in
+      the Dealer Developer Portal under a shared set of General Concepts covering base URL,
+      versioning, API key authentication, quotas and error handling.
+    properties:
+      - url: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+        type: Documentation
+      - url: https://developer.inv.dealer.com/inventory/equipment
+        type: Console
+  - aid: dealer-com:dealer-com-price-api
+    name: Dealer.com Price API
+    tags:
+      - Inventory
+      - Pricing
+      - Automotive
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://developer.inv.dealer.com/content/inventory/price.html
+    baseURL: https://api.dealer.com
+    description: >-
+      Vehicle price data for Dealer.com inventory, exposed as its own resource within the
+      Inventory family alongside the Vehicle and Equipment APIs. Complements the twenty price
+      fields already selectable on the Vehicle resource. Read-only, API key authenticated,
+      paginated with start and size, and constrained to the dealer accounts the consumer has
+      been authorized to access.
+    properties:
+      - url: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+        type: Documentation
+      - url: https://developer.inv.dealer.com/inventory/price
+        type: Console
+  - aid: dealer-com:dealer-com-website-integration-api
+    name: Dealer.com Website Integration API
+    tags:
+      - Website Platform
+      - Partner Program
+      - Embedded Components
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+    humanURL: https://dealerdotcom.github.io/web-integration-api-docs/
+    baseURL: https://api.web.dealer.com
+    description: >-
+      Browser-side JavaScript API that lets Integrated Partner Program partners place and
+      control experiences on Dealer.com dealer websites. A partner hosts one script on their
+      own CDN; Dealer.com loads it into the page, where it obtains a handle from
+      window.DDC.APILoader and subscribes to versioned events (page-load-v1,
+      dealership-info-v1, vehicle-shown-v1, vehicle-data-updated-v1) or queries context
+      directly through promise-returning utilities. Content is placed into named insert
+      locations (vehicle-media, vehicle-badge, vehicle-pricing, vehicle-payments,
+      primary-banner, secondary-content, content) or as managed call-to-action buttons.
+      Content-delivery authentication is JWT-based: Dealer.com signs a claim that it rendered
+      a given page for a given account on a given domain with given vehicles, and the partner
+      validates it against the published rotating JWK Set at api.web.dealer.com.
+    properties:
+      - url: https://dealerdotcom.github.io/web-integration-api-docs/
+        type: APIReference
+      - url: https://github.com/DealerDotCom/web-integration-api-docs
+        type: SourceCode
+      - url: https://api.web.dealer.com/ipp/keys/jwks.json
+        type: JWKS
+      - url: components/dealer-com-components.yml
+        type: Components
+      - url: changelog/dealer-com-changelog.yml
+        type: ChangeLog
   - aid: dealer-com:dealer-com-leads-api
     name: Dealer.com Leads API
     tags:
@@ -66,16 +226,64 @@ apis:
 common:
   - type: VulnerabilityDisclosure
     url: security/dealer-com-vulnerability-disclosure.yml
+  - type: Security
+    url: security/dealer-com-vulnerability-disclosure.yml
   - type: DomainSecurity
     url: security/dealer-com-domain-security.yml
+  - type: SecurityTxt
+    url: well-known/dealer-com-security.txt
+  - type: WellKnown
+    url: well-known/dealer-com-well-known.yml
+  - type: Authentication
+    url: authentication/dealer-com-authentication.yml
+  - type: Conventions
+    url: conventions/dealer-com-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dealer-com-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/dealer-com-lifecycle.yml
+  - type: StatusPage
+    url: https://coxautoapi.statuspage.io
+  - type: ChangeLog
+    url: changelog/dealer-com-changelog.yml
+  - type: Conformance
+    url: conformance/dealer-com-conformance.yml
+  - type: DataModel
+    url: data-model/dealer-com-data-model.yml
+  - type: Components
+    url: components/dealer-com-components.yml
+  - type: Sandbox
+    url: sandbox/dealer-com-sandbox.yml
+  - type: Packages
+    url: packages/dealer-com-packages.yml
+  - type: LLMsTxt
+    url: llms/dealer-com-llms.txt
   - type: LinkedIn
     url: https://www.linkedin.com/company/dealer-com
   - type: Website
     url: https://www.dealer.com
+  - type: DeveloperPortal
+    url: https://developer.inv.dealer.com/
+  - type: Documentation
+    url: https://developer.inv.dealer.com/content/accounts/accounts-home.html
   - type: Documentation
     url: https://www.dealer.com/products/integrated-partner-program
   - type: Documentation
     url: https://developer.coxautoinc.com/
+  - type: APIReference
+    url: https://dealerdotcom.github.io/web-integration-api-docs/
+  - type: GettingStarted
+    url: https://developer.inv.dealer.com/content/home.html
+  - type: SignUp
+    url: https://coxautoinc.mashery.com/member/register
+  - type: Support
+    url: https://www.dealer.com/support/
+  - type: GitHubOrganization
+    url: https://github.com/DealerDotCom
+  - type: TermsOfService
+    url: https://www.dealer.com/company/terms-of-use/
+  - type: PrivacyPolicy
+    url: https://www.dealer.com/company/dealer-com-privacy-policy/
   - type: Plans
     url: plans/dealer-com-plans-pricing.yml
   - type: RateLimits
@@ -89,3 +297,26 @@ common:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 14
+  pass: local-v1
+x-coverage:
+  state: covered
+  reason: null
+  detail: >-
+    Contract discovery found Dealer.com's own developer portal at developer.inv.dealer.com,
+    which the prior pass missed; the reference for the Accounts, Incentives and Inventory APIs
+    is fully public and was read directly, alongside the Website Integration API reference in
+    public git. The only machine-readable specification the provider ships is broken — all
+    five Swagger documents behind its API Explorer have returned an AWS API Gateway error
+    string since 2020-02-13 — so no OpenAPI could be harvested and none was authored.
+  evidence:
+    - url: https://developer.inv.dealer.com/content/inventory/inventory-home.html
+      status: 200
+    - url: https://developer.inv.dealer.com/swagger-docs/vehicles/vcda_vehicle.json
+      status: 200
+    - url: https://api.dealer.com/
+      status: 0
+  checked: '2026-08-12'

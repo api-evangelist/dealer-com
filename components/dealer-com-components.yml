@@ -1,0 +1,117 @@
+generated: '2026-08-12'
+method: searched
+source: https://dealerdotcom.github.io/web-integration-api-docs/
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://dealerdotcom.github.io/web-integration-api-docs/
+  - https://github.com/DealerDotCom/web-integration-api-docs
+description: >-
+  Dealer.com's Website Integration API is a client-side embedded-component surface, not an SDK
+  and not a REST API. A partner ships one JavaScript file, hosted on their own CDN, which
+  Dealer.com loads into the dealer's website. The script obtains an API handle from the global
+  loader window.DDC.APILoader, subscribes to page and vehicle events, and inserts markup,
+  buttons and gallery slides into a fixed set of named insert locations on search results and
+  vehicle detail pages. This is the surface the Integrated Partner Program actually sells, and
+  it is fully and publicly documented in git.
+loader:
+  global: window.DDC.APILoader
+  bootstrap: |
+    (async APILoader => {
+        const API = await APILoader.create();
+        // ...
+    })(window.DDC.APILoader);
+  distribution: served by the Dealer.com website platform into the dealer's page
+  registry: none
+  pinning: none — the loader is a platform global, not a versioned package a partner installs
+  partner_script_hosting: >-
+    The partner hosts their own script on a CDN (Cloudfront or Akamai are the examples given);
+    Dealer.com configures the integration to load it for the sites where it is enabled.
+families:
+  - name: Insert locations
+    description: >-
+      Named regions of Dealer.com pages where a partner may safely insert markup, via
+      API.insert(name, callback) or API.insertOnce(name, callback). The callback receives the
+      target element and the vehicle payload for that card.
+    components:
+      - name: vehicle-media
+        placement: below the vehicle image area on vehicle search pages
+      - name: vehicle-badge
+        placement: below the vehicle tech specs area on search and detail pages
+      - name: vehicle-payments
+      - name: vehicle-pricing
+      - name: vehicle-media-container
+      - name: primary-banner
+      - name: secondary-content
+      - name: content
+  - name: Call-to-action components
+    description: >-
+      Managed CTA buttons placed into the platform's own CTA areas. The partner declares a CTA
+      type and an intent and returns an attribute object per vehicle; Dealer.com generates the
+      markup so the button inherits site styling.
+    methods:
+      - API.insertCallToAction(type, intent, setupFunction(meta))
+      - API.insertCallToActionOnce(type, intent, setupFunction(meta))
+      - API.updateLink(intent, setupFunction(meta))
+    types:
+      - button
+    note: >-
+      `button` is documented as the only currently supported CTA type. The setupFunction is
+      called once per inventory item on the page and receives the Vehicle Event payload.
+  - name: Element construction and injection
+    description: Helpers for building and attaching elements and assets.
+    methods:
+      - API.create(type, options)
+      - API.append(targetEl, appendEl)
+      - API.insertGalleryContent(target, arrayOfObjects)
+      - API.loadCSS(resourceUrl)
+      - API.loadJS(resourceUrl, attributeMap)
+  - name: Event subscriptions
+    description: >-
+      Versioned in-page pub/sub. Subscribing is how a partner learns which dealer, which page
+      and which vehicles are in view. These are BROWSER events, not HTTP webhooks — there is no
+      server-push surface, which is why no AsyncAPI or Webhooks artifact is emitted.
+    method: API.subscribe(name, callback(event))
+    events:
+      - name: page-load-v1
+        payload: Page Event
+      - name: dealership-info-v1
+        payload: Dealership Info Event
+      - name: vehicle-shown-v1
+        payload: Vehicle Event
+      - name: vehicle-data-updated-v1
+        payload: Page Data + Vehicle Data
+  - name: Utility data accessors
+    description: >-
+      Promise-returning accessors for the same data outside the event flow, so a partner can
+      query context at any point rather than waiting for an event to fire.
+    methods:
+      - API.utils.getAttributeForVehicles(attribute)
+      - API.utils.getConfig(testConfig)
+      - API.utils.getDealerData()
+      - API.utils.getPageData()
+      - API.utils.getVehicleData()
+      - API.utils.getUrlParams()
+      - API.utils.getPixallVisitorId()
+      - API.utils.getJwtForSite()
+      - API.utils.getJwtForVehicles()
+      - API.utils.getUnlockedVehicles()
+      - API.utils.unlockPricing(uuids)
+  - name: Diagnostics
+    methods:
+      - API.log(message)
+      - API.test(scriptUrl)
+    controls:
+      - '?_integrationMode=debug'
+      - '?_integrationLogLevel=trace'
+access:
+  program: Integrated Partner Program
+  enrollment: https://forms.dealer.com/integrated-partner-program.htm
+  contact: IntegratedPartners@coxautoinc.com
+  credential: integration key issued on enrollment
+  note: >-
+    The documentation is fully public and requires no login; only activation of an integration
+    on live dealer sites requires the program relationship.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

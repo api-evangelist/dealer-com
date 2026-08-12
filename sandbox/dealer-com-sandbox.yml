@@ -1,0 +1,95 @@
+generated: '2026-08-12'
+method: searched
+source: https://dealerdotcom.github.io/web-integration-api-docs/
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://dealerdotcom.github.io/web-integration-api-docs/
+  - https://developer.inv.dealer.com/
+description: >-
+  Dealer.com publishes a genuine, unusual test harness for the Website Integration API: rather
+  than a sandbox tenant, a partner can cookie ANY live Dealer.com dealer website into loading
+  their in-development script, for their browser session only. Dealer.com names a public demo
+  dealership to develop against and ships a downloadable JWT/JWK validation demo application.
+  The Dealer Developer Portal REST APIs have no test mode and no test key — the only console
+  they ship, the Swagger API Explorer, is broken because its spec documents have contained an
+  error string since 2020.
+modes:
+  - name: Website Integration API — session test mode
+    type: cookie-scoped script injection on production sites
+    live_vs_test: >-
+      There is no separate test environment. The partner's script is loaded on a real,
+      production dealer website, but only into the browser session that set the cookie.
+    activation: |
+      (async APILoader => {
+          const API = await APILoader.create();
+          API.test('https://www.yourdomain.com/your-javascript-file.js');
+      })(window.DDC.APILoader);
+    expiry: cookie expires with the browser session or when cookies are cleared
+    debug_parameters:
+      - name: _integrationMode
+        value: debug
+        effect: surfaces suppressed API errors and API.log() output in the browser console
+      - name: _integrationLogLevel
+        value: trace
+        effect: verbose action logging; filterable in the console by "Web Integration API"
+    console_filter: Web Integration API
+  - name: Dealer Developer Portal REST APIs
+    type: none
+    live_vs_test: >-
+      No test mode, no test key prefix, no separate host. A single production API key issued on
+      registration is the only credential.
+    console:
+      name: API Explorer (Swagger UI)
+      url: https://developer.inv.dealer.com/accounts/accounts
+      working: false
+      reason: >-
+        The Swagger UI loads its definition from /swagger-docs/<api>/vcda_*.json. All five of
+        those documents return HTTP 200 with the 42-byte body
+        {"message":"Missing Authentication Token"} and have an S3 Last-Modified of 2020-02-13,
+        so the console renders nothing.
+test_fixtures:
+  - name: Public demo dealer website
+    value: https://www.roimotors.com/
+    kind: site
+    note: Named in the docs as a good site to start testing an integration against.
+  - name: Demo dealer group account
+    value: ddcdemo
+    kind: accountId
+    note: >-
+      Used throughout the Accounts API reference examples. The published sample response lists
+      35 descendant rooftop accounts (crmmotors*, ddcdemo<franchise>, gsm*demo, jqmotors) and
+      20 franchises.
+  - name: Demo site account
+    value: futuredemodealer
+    kind: accountId / siteId
+    note: Used in the Website Integration API Page and Dealership Info event example payloads.
+  - name: Sample vehicle uuid
+    value: 474ed97d0a0e0a176b998211899d5648
+    kind: vehicle uuid
+    note: Used in the Vehicle API sample request.
+  - name: Web API test site
+    value: https://webapitestddc.cms.dealer.com/growing-iframe-example.htm
+    kind: worked example
+    note: Live page demonstrating the resizing-iframe sample code.
+tooling:
+  - name: Integrated Partner Program auth demo
+    kind: downloadable sample application
+    url: https://dealerdotcom.github.io/web-integration-api-docs/downloads/ddc-ipp-auth-demo-master.zip
+    description: >-
+      Demonstrates consuming Dealer.com's Integrated Partner Program JWKs, JWTs and JWSs so a
+      partner can validate a page-render claim before serving paid content.
+  - name: Local documentation container
+    kind: docker
+    url: https://github.com/DealerDotCom/web-integration-api-docs/tree/master/local
+    description: Runs the API documentation site locally for contributors.
+time_simulation:
+  supported: false
+gaps:
+  - No sandbox API key, no test-mode key prefix, and no non-production host for the REST APIs.
+  - The only interactive console the provider ships has been non-functional since 2020.
+  - Testing the Website Integration API means running unreleased partner code inside a real
+    dealer's production website, which is a real developer-experience choice worth naming.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

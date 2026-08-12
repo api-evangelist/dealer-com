@@ -1,0 +1,240 @@
+generated: '2026-08-12'
+method: searched
+source: https://developer.inv.dealer.com/content/accounts/accountsApi.html
+provider: Dealer.com
+providerId: dealer-com
+docs:
+  - https://developer.inv.dealer.com/content/accounts/accountsApi.html
+  - https://developer.inv.dealer.com/content/inventory/vehicleApi.html
+  - https://developer.inv.dealer.com/content/incentives/incentivesApi.html
+  - https://dealerdotcom.github.io/web-integration-api-docs/
+description: >-
+  Entity graph for the Dealer.com Developer Portal APIs, read from the provider's published
+  object reference pages and sample payloads. Derived from documentation rather than from an
+  OpenAPI, because the five Swagger documents the portal ships have contained an AWS API
+  Gateway error string since 2020. Account is the root: every vehicle and every incentive is
+  scoped to a dealer account, and accounts form a self-referential hierarchy through
+  parentIds / ancestorIds / decendantIds (dealer groups and their rooftops).
+entities:
+  - name: Account
+    id_field: accountId
+    id_form: opaque dealer slug (ddcdemo, crmmotorsaudi, futuredemodealer)
+    type_discriminator: acct_v1
+    endpoints:
+      - GET /accounts/search
+      - GET /accounts/id/{accountId}
+    properties:
+      - name: accountId
+        type: string
+      - name: name
+        type: string
+        description: Dealership name.
+      - name: address
+        type: object
+        fields: [city, country, firstLineAddress, postalCode, secondLineAddress, state]
+      - name: contact
+        type: object
+        fields: [company, email, phone]
+      - name: webAddress
+        type: string
+      - name: timeZoneOffset
+        type: integer
+      - name: franchises
+        type: array<string>
+        description: OEM franchises sold at the dealership.
+      - name: dealerCodes
+        type: array<object>
+        fields: [code, codeType]
+        description: External identifiers keyed by system (driverside, route-one, at-kbb, dtid, dealertrack-post).
+      - name: parentIds
+        type: array<string>
+      - name: ancestorIds
+        type: array<string>
+      - name: decendantIds
+        type: array<string>
+        note: Spelled "decendantIds" in the published contract.
+      - name: links
+        type: array<Link>
+  - name: Vehicle
+    id_field: uuid
+    id_form: 32-char hex; documented as a unique combination of VIN and Account
+    endpoints:
+      - GET /vehicles/search
+      - GET /vehicles/id/{uuid}
+    property_count_selectable: 66
+    properties_highlight:
+      identity: [uuid, vin, stockNumber, chromeId, autodataUsId, autodataCaId, cCode]
+      classification: [make, model, modelCode, year, trim, category, classification, type, certified, status, sold]
+      spec: [bodyStyle, bed, cab, doors, driveLine, engine, engineSize, gvEngine, transmission, fuelType, cityFuelEconomy, highwayFuelEconomy, odometer, optionCodes]
+      appearance: [exteriorColor, exteriorColorCode, interiorColor, interiorColorCode, normalExteriorColor, normalInteriorColor, normalInteriorMaterial]
+      pricing: [askingPrice, salePrice, internetPrice, emailPrice, msrp, invoicePrice, actualCashValue, retailValue, wholesalePrice, kbbValue, dealerFee, discount, salesCost, webBottomLinePrice, exportBottomLinePrice, eleadPrice, eleadPriceLessOEMCash, autonationMsrpAdv, autonationMsrpBeforePkgDisc, autonationPkgDisc]
+      provenance: [inventoryDate, comments, country]
+    note: >-
+      The pricing block is the interesting part of this model: a single vehicle carries up to
+      twenty distinct price fields, several of them named for specific dealer groups and CRM
+      vendors (autonation*, elead*), which is a direct read on how Dealer.com's inventory feed
+      absorbs third-party pricing systems.
+  - name: Equipment
+    id_field: uuid
+    endpoints:
+      - GET /vehicles/equipment
+      - GET /vehicles/equipment/id/{uuid}
+    description: Equipment and option data for a vehicle.
+  - name: Price
+    id_field: uuid
+    endpoints:
+      - GET /vehicles/price
+    description: Price data for a vehicle, exposed as its own API alongside the price fields on Vehicle.
+  - name: Incentive
+    id_field: uniqueId
+    id_form: '`accountID_incentiveID`'
+    endpoints:
+      - GET /incentives
+      - GET /incentives/id/{uniqueId}
+    properties:
+      - name: uniqueId
+        type: string
+      - name: incentiveId
+        type: string
+      - name: accountId
+        type: string
+      - name: creatorAccountId
+        type: string
+        description: Incentive data source — a third-party provider or an internal accountId.
+      - name: incentiveType
+        type: string
+        description: Cash, Lease, Finance, etc.
+      - name: incentiveData
+        type: IncentiveData
+      - name: thirdPartyId
+        type: string
+      - name: defaultLanguage
+        type: string
+      - name: languageCodes
+        type: array<string>
+      - name: countryCode
+        type: string
+      - name: applicableYear
+        type: integer
+      - name: applicableMake
+        type: string
+      - name: applicableModel
+        type: string
+      - name: effectiveDate
+        type: timestamp
+      - name: expirationDate
+        type: timestamp
+      - name: created
+        type: timestamp
+      - name: lastUpdate
+        type: timestamp
+      - name: title
+        type: string
+      - name: shortTitle
+        type: string
+      - name: disclaimer
+        type: string
+      - name: stateDisclaimer
+        type: string
+      - name: typeDisclaimer
+        type: string
+      - name: offerDetails
+        type: string
+      - name: imageUrl
+        type: string
+      - name: priority
+        type: integer
+      - name: featured
+        type: boolean
+      - name: globallyVisible
+        type: boolean
+      - name: mappedByInventory
+        type: boolean
+      - name: vehicleTrims
+        type: array
+      - name: globalVehicleTrimIds
+        type: array
+  - name: Link
+    description: >-
+      HAL-style hypermedia link embedded in every resource. Shared shape across all entities.
+    properties:
+      - {name: rel, type: string}
+      - {name: href, type: string}
+      - {name: hreflang, type: string}
+      - {name: media, type: string}
+      - {name: title, type: string}
+      - {name: type, type: string}
+      - {name: templated, type: boolean}
+      - {name: deprecation, type: string}
+relationships:
+  - from: Account
+    to: Account
+    type: has_many
+    via: decendantIds
+    description: Dealer group to its rooftops.
+  - from: Account
+    to: Account
+    type: belongs_to
+    via: parentIds
+  - from: Account
+    to: Account
+    type: belongs_to
+    via: ancestorIds
+    description: Full ancestry chain, not just the immediate parent.
+  - from: Vehicle
+    to: Account
+    type: belongs_to
+    via: account.accountId
+    description: Embedded account stub with its own links[] on every vehicle.
+  - from: Vehicle
+    to: Account
+    type: belongs_to
+    via: associatedAccountId
+    description: Secondary association used when inventory is shared across a group.
+  - from: Vehicle
+    to: Equipment
+    type: has_many
+    via: uuid
+    description: Equipment records are addressed by the same vehicle uuid.
+  - from: Vehicle
+    to: Price
+    type: has_one
+    via: uuid
+  - from: Incentive
+    to: Account
+    type: belongs_to
+    via: accountId
+  - from: Incentive
+    to: Account
+    type: belongs_to
+    via: creatorAccountId
+    description: Feed that created the incentive, which may be a third party rather than the dealer.
+  - from: Incentive
+    to: Vehicle
+    type: has_many
+    via: vehicleTrims / globalVehicleTrimIds / applicableMake+applicableModel+applicableYear
+    description: >-
+      Incentives attach to vehicles by trim identifiers when mappedByInventory is set, and
+      otherwise by make/model/year matching.
+browser_surface_entities:
+  note: >-
+    The Website Integration API publishes three additional payload shapes to in-page
+    subscribers. They overlap the REST model but are not the same objects and are not
+    addressable by id.
+  entities:
+    - name: Page Event payload
+      fields: [accountId, siteId, defaultDomain, indexPage, searchPage, detailPage, franchises, design, pageName, layoutType, locale]
+    - name: Dealership Info Event payload
+      fields: [dealershipName, dealershipAddress1, dealershipAddress2, dealershipCity, dealershipCodes, dealershipFranchises, dealershipPostalCode, dealershipStateProvince, dealershipCountry]
+    - name: Vehicle Event payload
+      fields: [accountId, address, vin, uuid, autodataCaId, bodyStyle, certified, inventoryType, deliveryDateRange, oemSourcedMerchandsingStatus, finalPrice]
+      note: Field list is partial; the published payload is large and mirrors the REST Vehicle model.
+gaps:
+  - No published schema documents (no JSON Schema, no working OpenAPI) — every type above is
+    read from prose tables and sample payloads.
+  - Field types on the Vehicle model are frequently rendered as empty objects ({}) in the
+    published response samples, so the true type of bodyStyle, driveLine, fuelType,
+    exteriorColor and similar enum-ish fields is not knowable from the docs.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
