@@ -55,6 +55,10 @@ apis:
   - aid: dealer-com:dealer-com-accounts-api
     name: Dealer.com Accounts API
     tags:
+      - Account
+      - Dealership
+      - Automotive
+    tags_raw:
       - Accounts
       - Dealership
       - Automotive
