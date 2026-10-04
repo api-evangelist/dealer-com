@@ -22,16 +22,19 @@ description: >-
   five Swagger documents the portal's own API Explorer loads have contained an AWS API
   Gateway error string since February 2020.
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - dealerdotcom/web-integration-api-docs
   open_source: unknown
   commercial: true
   callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
   - pricing
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: unknown
@@ -48,6 +51,10 @@ accessModel:
   generated: '2026-08-12'
   method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dealer-com.png
+x-docs-platform: swagger-ui
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-25
+x-docs-hosting: aws-cloudfront
 tags:
   - Automotive
   - Dealership
