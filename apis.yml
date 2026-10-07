@@ -263,6 +263,8 @@ apis:
       behind OAuth and an approved partner agreement. Endpoints modeled, not an
       open public surface.
 common:
+  - type: Pricing
+    url: https://developer.inv.dealer.com/content/home.html
   - type: VulnerabilityDisclosure
     url: security/dealer-com-vulnerability-disclosure.yml
   - type: Security
