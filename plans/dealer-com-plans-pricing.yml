@@ -130,3 +130,38 @@ plans:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units:
+  - negotiated
+  - request
+  plans:
+  - name: Dealer Developer Portal API Key
+    access: other
+    model: free
+    model_how: derived
+    units:
+    - request
+    periods:
+    - day
+    - second
+  - name: Integrated Partner Program
+    access: enterprise
+    model: subscription
+    model_how: derived
+    units:
+    - negotiated
+    periods:
+    - year
+  - name: Cox Automotive Integration Platform
+    access: enterprise
+    model: subscription
+    model_how: derived
+    units:
+    - negotiated
+    periods:
+    - year
