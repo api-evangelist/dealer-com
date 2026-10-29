@@ -1,4 +1,4 @@
-# Dealer.com (dealer-com)
+# Dealer.com
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,57 +64,121 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Dealer.com, a Cox Automotive brand, builds automotive dealership websites, digital advertising, and digital marketing technology used by thousands of franchise and independent dealers across North America.
+Dealer.com, a Cox Automotive brand, builds automotive dealership websites, digital advertising, and digital marketing technology used by thousands of franchise and independent dealers across North America. It publishes two distinct developer surfaces. The Dealer Developer Portal at developer.inv.dealer.com documents a read-only REST family — Accounts, Incentives and Inventory (Vehicle, Equipment, Price) — authenticated with a single self-registered API key, with published quotas of 2 calls/second and 5,000 calls/day, offset pagination, sparse fieldsets via a repeatable select parameter, and HAL-style hypermedia links. The Website Integration API, documented in public git at github.com/DealerDotCom, is a browser-side JavaScript API that lets Integrated Partner Program partners subscribe to page and vehicle events and insert markup, CTAs and gallery content into named locations on dealer sites, with content-delivery authentication built on signed JWTs validated against a live JWK Set. Platform-level lead, deal and digital-retail data flows separately through the OAuth-gated Cox Automotive Integration Platform at developer.coxautoinc.com. Both Dealer.com surfaces are documented in public; the credentials, not the contracts, are what is gated. The published REST surface is decaying, though — the documented base host api.dealer.com no longer resolves, and the five Swagger documents the portal's own API Explorer loads have contained an AWS API Gateway error string since February 2020.
 
-**Access model: partner-gated / contact-sales.** Dealer.com does **not** publish an open, self-serve public API. Third parties integrate through the **Dealer.com Integrated Partner Program** (Website Integration API) and, at the platform level, through the **Cox Automotive Integration Platform** at [developer.coxautoinc.com](https://developer.coxautoinc.com/), which uses OAuth (Okta) and requires an approved partner agreement. The API entries below are **logical models** of those partner capabilities and are marked `endpointsModeled: true` — they intentionally assert no fabricated base URLs or endpoints, because no open specification is published.
+**Areas:** Automotive · Dealership · Digital Marketing · Website Platform · Inventory · Vehicle Data · Incentives · Leads · Digital Advertising · Cox Automotive · Partner Programs
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/dealer-com/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/dealer-com/refs/heads/main/apis.yml)
+## Dealer.com on APIs.io
 
-## Tags
+Everything profiled for Dealer.com is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/dealer-com/](https://apis.io/providers/dealer-com/)** — or go straight to one of the APIs or properties below.
 
-- Automotive
-- Dealership
-- Digital Marketing
-- Website Platform
-- Inventory
-- Leads
-- Digital Advertising
-- Cox Automotive
-- Partner Program
+### APIs (7)
 
-## Timestamps
+- [Dealer.com Accounts API](https://apis.io/apis/dealer-com/dealer-com-accounts-api/) — Dealership account information for dealers who have a relationship with Dealer.com. GET /accounts/search returns a filterable, paginated list; GET…
+- [Dealer.com Incentives API](https://apis.io/apis/dealer-com/dealer-com-incentives-api/) — Manufacturer and dealer incentive offers. GET /incentives returns a filterable, paginated list; GET /incentives/id/{uniqueId} returns one offer, keyed by a…
+- [Dealer.com Vehicle API](https://apis.io/apis/dealer-com/dealer-com-vehicle-api/) — Vehicle inventory available for sale at Dealer.com dealerships in the United States and Canada. GET /vehicles/search returns a filterable, paginated list;…
+- [Dealer.com Equipment API](https://apis.io/apis/dealer-com/dealer-com-equipment-api/) — Equipment and option data for vehicles in Dealer.com inventory, exposed as its own resource alongside the Vehicle API. GET /vehicles/equipment returns a…
+- [Dealer.com Price API](https://apis.io/apis/dealer-com/dealer-com-price-api/) — Vehicle price data for Dealer.com inventory, exposed as its own resource within the Inventory family alongside the Vehicle and Equipment APIs. Complements…
+- [Dealer.com Website Integration API](https://apis.io/apis/dealer-com/dealer-com-website-integration-api/) — Browser-side JavaScript API that lets Integrated Partner Program partners place and control experiences on Dealer.com dealer websites. A partner hosts one…
+- [Dealer.com Leads API](https://apis.io/apis/dealer-com/dealer-com-leads-api/) — Lead generation and management capability - pre-qualification, messaging, and customer-engagement tools that capture website leads and route them into…
 
-- **Created:** 2026-07-10
-- **Modified:** 2026-07-10
+### Published properties
 
-## APIs (modeled partner capabilities)
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
+#### Security (3)
 
+Authentication, trust centre, and vulnerability disclosure.
 
-### Dealer.com Leads API
+- [Dealer Com Authentication](https://apis.io/security/dealer-com/dealer-com-authentication/)
+- [Dealer Com Domain Security](https://apis.io/security/dealer-com/dealer-com-domain-security/)
+- [Dealer Com Vulnerability Disclosure](https://apis.io/security/dealer-com/dealer-com-vulnerability-disclosure/)
 
-Lead generation and management — pre-qualification, messaging, and customer-engagement tools that capture website leads and route them into dealer CRM and Cox Automotive systems (Dealertrack, VinSolutions). The Cox Automotive Integration Platform documents Lead Management operations (view, create, update leads; trade-ins; vehicles of interest) behind OAuth and a partner agreement.
+#### Plans and pricing (1)
 
-- **Human URL:** [Cox Automotive Integration Platform](https://developer.coxautoinc.com/)
-- `endpointsModeled: true`
+Published plans, tiers and prices.
 
+- [Dealer Com Plans Pricing](https://apis.io/plans/dealer-com/dealer-com-plans-pricing/)
 
+#### Rate limits (1)
 
-## Common Properties
+Published request limits.
 
-- [LinkedIn](https://www.linkedin.com/company/dealer-com)
+- [Dealer Com Rate Limits](https://apis.io/rate-limits/dealer-com/dealer-com-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Dealer Com Finops](https://apis.io/finops/dealer-com/dealer-com-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.dealer.com)
-- [Documentation — Integrated Partner Program](https://www.dealer.com/products/integrated-partner-program)
-- [Documentation — Cox Automotive Integration Platform](https://developer.coxautoinc.com/)
-- [Plans](plans/dealer-com-plans-pricing.yml)
-- [Rate Limits](rate-limits/dealer-com-rate-limits.yml)
-- [Fin Ops](finops/dealer-com-finops.yml)
+- [Documentation](https://developer.inv.dealer.com/content/accounts/accounts-home.html)
+- [Getting started](https://developer.inv.dealer.com/content/home.html)
+- [API reference](https://dealerdotcom.github.io/web-integration-api-docs/)
+- [Pricing](https://developer.inv.dealer.com/content/home.html)
+- [Sign up](https://coxautoinc.mashery.com/member/register)
+- [Support](https://www.dealer.com/support/)
+- [Terms of service](https://www.dealer.com/company/terms-of-use/)
+- [Privacy policy](https://www.dealer.com/company/dealer-com-privacy-policy/)
+- [GitHub](https://github.com/DealerDotCom)
+- [Status](https://coxautoapi.statuspage.io)
 
-## Review
+## API Evangelist rating
 
-Does Dealer.com expose a documented public WebSocket API? **No.** See [review.yml](review.yml). Dealer.com publishes no open public API of any transport; documented Cox Automotive Integration Platform APIs are OAuth-gated REST over HTTPS. No WebSocket or SSE surface is documented.
+**Kin Score 47.3** — developing · rubric 0.25.0 · scored 2026-10-23
 
-## Maintainers
+| Facet | Score |
+|---|---|
+| Discoverability | 69.2 |
+| Contract quality | 0.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 76.3 |
+| Developer ergonomics | 61.9 |
+| Access clarity | 76.3 |
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Agent readiness 10.1** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 30.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/dealer-com/](https://apis.io/providers/dealer-com/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Dealer.com: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/dealer-com/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
